@@ -17,7 +17,7 @@ package io.retrier;
 
 
 /**
- * Runner runs the code block wrapped within the lambda expression.
+ * Runner specify some code block which returns nothing but can throw exception.
  */
 @FunctionalInterface
 public interface Runner {

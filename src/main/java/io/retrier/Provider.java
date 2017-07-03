@@ -17,7 +17,7 @@ package io.retrier;
 
 
 /**
- * Provider provides the value after executing the code block wrapped within the lambda expression.
+ * Runner specify some code block which returns the value or will throw an exception.
  * @param <V> Type of the returned value.
  */
 @FunctionalInterface
