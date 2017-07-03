@@ -17,7 +17,7 @@ package io.retrier;
 
 
 import io.retrier.handler.CompositeHandler;
-import io.retrier.handler.ExceptionHandler;
+import io.retrier.handler.ExceptionsHandler;
 import io.retrier.handler.RetryCountHandler;
 
 public class Retry {
@@ -31,7 +31,7 @@ public class Retry {
   }
 
   public static Handler withExceptions(Class<Exception>... exceptionClasses) {
-    return new ExceptionHandler(exceptionClasses);
+    return new ExceptionsHandler(exceptionClasses);
   }
 
 }
