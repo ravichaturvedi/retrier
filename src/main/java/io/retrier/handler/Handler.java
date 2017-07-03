@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier;
+package io.retrier.handler;
 
 public interface Handler {
 
@@ -21,8 +21,8 @@ public interface Handler {
 
   }
 
-  default <T> void handlePostExec(T result) {
-
+  default <T> T handlePostExec(T result) {
+    return result;
   }
 
   void handleException(Exception e) throws Exception;

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier;
+package io.retrier.handler.checker;
 
-import io.retrier.handler.catcher.CatchHandler;
 
-public interface Retrier {
+public class CompositeCheckHandler implements CheckHandler {
 
-  <T> T retry(CatchHandler handler, Provider<T> provider) throws Exception;
+  public CompositeCheckHandler(CheckHandler... checkHandlers) {
+  }
 
-  void retry(CatchHandler handler, Runner runner) throws Exception;
+  @Override
+  public void handleException(Exception e) throws Exception {
+
+  }
 }

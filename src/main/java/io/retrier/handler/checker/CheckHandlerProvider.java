@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier;
+package io.retrier.handler.checker;
 
-import io.retrier.handler.catcher.CatchHandler;
 
-public interface Retrier {
+@FunctionalInterface
+public interface CheckHandlerProvider {
 
-  <T> T retry(CatchHandler handler, Provider<T> provider) throws Exception;
-
-  void retry(CatchHandler handler, Runner runner) throws Exception;
+  CheckHandler provide();
 }

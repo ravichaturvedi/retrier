@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler;
+package io.retrier.handler.checker;
 
 
-import io.retrier.Handler;
+import io.retrier.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,25 +24,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
- * {@link RetryCountHandler} is a {@link Handler} implementation to make sure retry is happening within the max retries limit.
+ * {@link RetryCountCheckHandler} is a {@link CheckHandler} implementation to make sure retry is happening within the max retries checker.
  */
-public class RetryCountHandler implements Handler {
+public class RetryCountCheckHandler implements CheckHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RetryCountHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RetryCountCheckHandler.class);
 
   private final int maxRetries;
   private final AtomicInteger retryCount;
 
-  public RetryCountHandler(int maxRetries) {
-    validate(maxRetries);
+  public RetryCountCheckHandler(int maxRetries) {
+    Preconditions.ensure(maxRetries > 0, "Max retry count should be positive.");
     this.maxRetries = maxRetries;
     this.retryCount = new AtomicInteger();
-  }
-
-  private void validate(int maxRetries) {
-    if (maxRetries <= 0) {
-      throw new IllegalArgumentException("Max retry count should be positive.");
-    }
   }
 
   @Override
@@ -68,7 +62,7 @@ public class RetryCountHandler implements Handler {
 
   private void logSuccess() {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Current retry count'{}' is within max retries limit '{}'", retryCount.get(), maxRetries);
+      LOGGER.debug("Current retry count'{}' is within max retries checker '{}'", retryCount.get(), maxRetries);
     }
   }
 }

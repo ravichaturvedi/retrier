@@ -18,11 +18,11 @@ package io.retrier;
 
 import org.junit.Test;
 
-public class TestRetrier {
+public class TestDefaultRetrier {
 
   @Test
   public void testRetrier() throws Exception {
-    Retrier retrier = new Retrier();
+    Retrier retrier = Retrier.create();
     retrier.retry(e -> {}, () -> {
       System.out.println("Hello");
     });

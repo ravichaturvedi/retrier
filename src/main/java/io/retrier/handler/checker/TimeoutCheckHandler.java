@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler;
+package io.retrier.handler.checker;
 
-import io.retrier.Handler;
+import io.retrier.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,25 +23,19 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
- * {@link TimeoutHandler} is a {@link Handler} implementation to make sure retry is happening within the max timeout provided.
+ * {@link TimeoutCheckHandler} is a {@link CheckHandler} implementation to make sure retry is happening within the max timeout provided.
  */
-public class TimeoutHandler implements Handler {
+public class TimeoutCheckHandler implements CheckHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutCheckHandler.class);
 
   private final long timeoutInMillisec;
   private final AtomicLong startTimeInMillisec;
 
-  public TimeoutHandler(long timeoutInMillisec) {
-    validate(timeoutInMillisec);
+  public TimeoutCheckHandler(long timeoutInMillisec) {
+    Preconditions.ensure(timeoutInMillisec > 0, "Timeout should be positive.");
     this.timeoutInMillisec = timeoutInMillisec;
     this.startTimeInMillisec = new AtomicLong(0);
-  }
-
-  private void validate(long timeoutInMillisec) {
-    if (timeoutInMillisec <= 0) {
-      throw new IllegalArgumentException("Timeout should be positive.");
-    }
   }
 
   @Override

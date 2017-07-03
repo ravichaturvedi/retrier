@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler;
+package io.retrier.handler.catcher;
 
 
-import io.retrier.Handler;
+import io.retrier.Preconditions;
+import io.retrier.handler.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,28 +27,26 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * {@link ExceptionsHandler} is a {@link Handler} implementation to catch the provided exceptions while retrying.
+ * {@link ExceptionsCatchHandler} is a {@link Handler} implementation to catch the provided exceptions while retrying.
  *
  * It is similar to mentioning exceptions in catch block and consuming it.
  * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen again.
  */
-public class ExceptionsHandler implements Handler {
+public class ExceptionsCatchHandler implements CatchHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionsHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionsCatchHandler.class);
 
   // Exception classes to be handled.
   private final List<Class<Exception>> exceptionClasses;
 
-  public ExceptionsHandler(Class<Exception>... exceptionClasses) {
+  public ExceptionsCatchHandler(Class<Exception>... exceptionClasses) {
     validate(exceptionClasses);
     this.exceptionClasses = Collections.unmodifiableList(Arrays.asList(exceptionClasses));
   }
 
   private void validate(Class<Exception>... exceptionClasses) {
     Arrays.asList(exceptionClasses).forEach(cls -> {
-      if (cls == null) {
-        throw new IllegalArgumentException("Exception class cannot be null.");
-      }
+      Preconditions.ensureNotNull(cls, "Exception class cannot be null.");
     });
   }
 

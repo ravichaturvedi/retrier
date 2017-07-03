@@ -16,7 +16,9 @@
 package io.retrier.handler;
 
 
-import io.retrier.Handler;
+import io.retrier.Preconditions;
+import io.retrier.handler.catcher.CatchHandler;
+import io.retrier.handler.checker.CheckHandler;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,28 +26,37 @@ import java.util.List;
 
 public class CompositeHandler implements Handler {
 
-  private final List<Handler> handlers;
+  private List<Handler> handlers;
 
-  public CompositeHandler(Handler... handlers) {
-    this.handlers = Collections.unmodifiableList(Arrays.asList(handlers));
+  public CompositeHandler(CheckHandler checkHandler, CatchHandler catchHandler) {
+    Preconditions.ensureNotNull(checkHandler, "CheckHandler cannot be null.");
+    Preconditions.ensureNotNull(catchHandler, "CatchHandler cannot be null.");
+    this.handlers = Collections.unmodifiableList(Arrays.asList(checkHandler, catchHandler));
+  }
+
+  @Override
+  public void handlePreExec() {
+    handlers.forEach(Handler::handlePreExec);
+  }
+
+  @Override
+  public <T> T handlePostExec(T result) {
+    // Respond back from the first handler which transforms the result
+    for (Handler handler : handlers) {
+      T resp = handler.handlePostExec(result);
+      if (resp != result) {
+        return resp;
+      }
+    }
+
+    // Otherwise return back the result itself.
+    return result;
   }
 
   @Override
   public void handleException(Exception e) throws Exception {
-    // Try to get the exception handled by all the retry handler and short-circuit on the first successful handling.
     for (Handler handler : handlers) {
-      try {
-        handler.handleException(e);
-        return;
-      } catch (Exception ex) {
-        // If exception instance is not same as passed to handleException then raise it.
-        if (ex != e) {
-          throw ex;
-        }
-      }
+      handler.handleException(e);
     }
-
-    // If none of the retry handle handles the exception then propogate it.
-    throw e;
   }
 }

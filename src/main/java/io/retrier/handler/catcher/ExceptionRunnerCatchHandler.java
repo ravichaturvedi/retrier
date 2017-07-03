@@ -13,38 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler;
+package io.retrier.handler.catcher;
 
 
-import io.retrier.Handler;
+import io.retrier.Preconditions;
+import io.retrier.handler.Handler;
 import io.retrier.Runner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link ExceptionRunnerHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
+ * {@link ExceptionRunnerCatchHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
  */
-public class ExceptionRunnerHandler implements Handler {
+public class ExceptionRunnerCatchHandler implements CatchHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionRunnerHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionRunnerCatchHandler.class);
 
   private final Class<Exception> exceptionClass;
   private final Runner runner;
 
-  public ExceptionRunnerHandler(Class<Exception> exceptionClass, Runner runner) {
-    validate(exceptionClass, runner);
+  public ExceptionRunnerCatchHandler(Class<Exception> exceptionClass, Runner runner) {
+    Preconditions.ensureNotNull(exceptionClass, "Exception class cannot be null.");
+    Preconditions.ensureNotNull(runner, "Runner cannot be null.");
     this.exceptionClass = exceptionClass;
     this.runner = runner;
-  }
-
-  private void validate(Class<Exception> exceptionClass, Runner runner) {
-    if (exceptionClass == null) {
-      throw new IllegalArgumentException("Exception class cannot be null.");
-    }
-
-    if (runner == null) {
-      throw new IllegalArgumentException("Runner cannot be null.");
-    }
   }
 
   @Override

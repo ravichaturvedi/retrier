@@ -15,11 +15,18 @@
  */
 package io.retrier;
 
-import io.retrier.handler.catcher.CatchHandler;
 
-public interface Retrier {
+public class Preconditions {
 
-  <T> T retry(CatchHandler handler, Provider<T> provider) throws Exception;
+  public static void ensureNotNull(Object o, String msg) {
+    if (o == null) {
+      throw new IllegalArgumentException(msg);
+    }
+  }
 
-  void retry(CatchHandler handler, Runner runner) throws Exception;
+  public static void ensure(boolean test, String msg) {
+    if (!test) {
+      throw new IllegalArgumentException(msg);
+    }
+  }
 }
