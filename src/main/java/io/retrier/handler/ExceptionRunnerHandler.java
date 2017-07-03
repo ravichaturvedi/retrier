@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ExceptionRunnerHandler provides a handler implementation to run the runner when some exception occurs.
+ * {@link ExceptionRunnerHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
  */
 public class ExceptionRunnerHandler implements Handler {
 

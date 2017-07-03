@@ -15,44 +15,43 @@
  */
 package io.retrier.handler;
 
-
 import io.retrier.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
- * {@link RetryCountHandler} is a {@link Handler} implementation to make sure retry is happening within the max retries limit.
+ * {@link TimeoutHandler} is a {@link Handler} implementation to make sure retry is happening within the max timeout provided.
  */
-public class RetryCountHandler implements Handler {
+public class TimeoutHandler implements Handler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RetryCountHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutHandler.class);
 
-  private final int maxRetries;
-  private final AtomicInteger retryCount;
+  private final long timeoutInMillisec;
+  private final AtomicLong startTimeInMillisec;
 
-  public RetryCountHandler(int maxRetries) {
-    validate(maxRetries);
-    this.maxRetries = maxRetries;
-    this.retryCount = new AtomicInteger();
+  public TimeoutHandler(long timeoutInMillisec) {
+    validate(timeoutInMillisec);
+    this.timeoutInMillisec = timeoutInMillisec;
+    this.startTimeInMillisec = new AtomicLong(0);
   }
 
-  private void validate(int maxRetries) {
-    if (maxRetries <= 0) {
-      throw new IllegalArgumentException("Max retry count should be positive.");
+  private void validate(long timeoutInMillisec) {
+    if (timeoutInMillisec <= 0) {
+      throw new IllegalArgumentException("Timeout should be positive.");
     }
   }
 
   @Override
   public void handlePreExec() {
-    retryCount.incrementAndGet();
+    startTimeInMillisec.compareAndSet(0, System.currentTimeMillis());
   }
 
   @Override
   public void handleException(Exception e) throws Exception {
-    if (retryCount.get() >= maxRetries) {
+    if (System.currentTimeMillis() - startTimeInMillisec.get() > timeoutInMillisec) {
       logFailure();
       throw e;
     }
@@ -62,13 +61,13 @@ public class RetryCountHandler implements Handler {
 
   private void logFailure() {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exceeded Max Retries of ", maxRetries);
+      LOGGER.debug("Exceeded Timeout (in millisec): {}", timeoutInMillisec);
     }
   }
 
   private void logSuccess() {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Current retry count'{}' is within max retries limit '{}'", retryCount.get(), maxRetries);
+      LOGGER.debug("Still have {}ms to retry.", System.currentTimeMillis() - startTimeInMillisec.get());
     }
   }
 }

@@ -26,8 +26,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * ExceptionsHandler is similar to mentioning exceptions in catch block and consuming it.
+ * {@link ExceptionsHandler} is a {@link Handler} implementation to catch the provided exceptions while retrying.
  *
+ * It is similar to mentioning exceptions in catch block and consuming it.
  * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen again.
  */
 public class ExceptionsHandler implements Handler {
