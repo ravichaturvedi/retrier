@@ -18,6 +18,7 @@ package io.retrier.handler;
 
 import io.retrier.handler.exception.ExceptionHandler;
 import io.retrier.handler.limit.CompositeLimitHandler;
+import io.retrier.handler.limit.ExpBackoffLimitHandler;
 import io.retrier.handler.limit.LimitHandler;
 import io.retrier.handler.limit.RetryCountLimitHandler;
 import io.retrier.handler.limit.TimeoutLimitHandler;
@@ -48,6 +49,14 @@ public class CompositeHandler implements Handler {
 
         if (config.maxRetries != null) {
             beforeHandlers.add(new RetryCountLimitHandler(config.maxRetries));
+        }
+
+        if (config.expBackoffDuration != null && config.expBackoffMaxDuration != null) {
+            beforeHandlers.add(new ExpBackoffLimitHandler(config.expBackoffDuration.toMillis(), config.expBackoffMaxDuration.toMillis()));
+        }
+
+        if (config.expBackoffDuration != null && config.expBackoffMaxDuration == null) {
+            beforeHandlers.add(new ExpBackoffLimitHandler(config.expBackoffDuration.toMillis()));
         }
 
         return Arrays.asList(

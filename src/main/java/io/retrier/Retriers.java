@@ -38,8 +38,15 @@ public class Retriers {
         return c -> c.timeoutDuration = duration;
     }
 
-    public static Option withExpBackoffDelay(Duration delay) {
-        return c -> c.exponentialBackoffDuration = delay;
+    public static Option withExpBackoff(Duration delay) {
+        return c -> c.expBackoffDuration = delay;
+    }
+
+    public static Option withExpBackoff(Duration delay, Duration maxDelay) {
+        return c -> {
+            withExpBackoff(delay);
+            c.expBackoffMaxDuration = maxDelay;
+        };
     }
 
     public static Option withLogger(Logger logger) {

@@ -23,7 +23,8 @@ import java.time.Duration;
 public class Config {
     public Integer maxRetries;
     public Duration timeoutDuration;
-    public Duration exponentialBackoffDuration;
+    public Duration expBackoffDuration;
+    public Duration expBackoffMaxDuration;
     public Logger logger;
 
     /**
@@ -33,9 +34,10 @@ public class Config {
      */
     public Config copy() {
         Config config = new Config();
-        config.exponentialBackoffDuration = exponentialBackoffDuration;
+        config.expBackoffDuration = expBackoffDuration;
         config.maxRetries = maxRetries;
         config.timeoutDuration = timeoutDuration;
+        config.expBackoffMaxDuration = expBackoffMaxDuration;
         config.logger = logger;
         return config;
     }
@@ -45,7 +47,8 @@ public class Config {
         return "Config{" +
                 "maxRetries=" + maxRetries +
                 ", timeoutDuration=" + timeoutDuration +
-                ", exponentialBackoffDuration=" + exponentialBackoffDuration +
+                ", expBackoffDuration=" + expBackoffDuration +
+                ", expBackoffMaxDuration=" + expBackoffMaxDuration +
                 ", logger=" + logger +
                 '}';
     }
