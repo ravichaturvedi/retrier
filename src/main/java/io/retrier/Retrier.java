@@ -19,7 +19,7 @@ import io.retrier.handler.exception.ExceptionHandler;
 
 public interface Retrier {
 
-    <T> T retry(ExceptionHandler handler, Provider<T> provider) throws Exception;
+    <T> T retry(ExceptionHandler handler, Caller<T> caller) throws Exception;
 
     void retry(ExceptionHandler handler, Runner runner) throws Exception;
 }

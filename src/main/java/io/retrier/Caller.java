@@ -17,17 +17,17 @@ package io.retrier;
 
 
 /**
- * Runner specify some code block which returns the value or will throw an exception.
+ * Caller specify some code block which returns the value or will throw an exception.
  *
  * @param <V> Type of the returned value.
  */
 @FunctionalInterface
-public interface Provider<V> {
+public interface Caller<V> {
 
     /**
-     * Provide the value after executing the implementation.
+     * Call may return a value after executing the implementation.
      *
      * @throws Exception If underlying implementation throws.
      */
-    V provide() throws Exception;
+    V call() throws Exception;
 }

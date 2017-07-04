@@ -29,14 +29,14 @@ public class DefaultRetrier implements Retrier {
         this.limitHandlerProvider = limitHandlerProvider;
     }
 
-    public <T> T retry(ExceptionHandler exceptionHandler, Provider<T> provider) throws Exception {
+    public <T> T retry(ExceptionHandler exceptionHandler, Caller<T> caller) throws Exception {
         // Create the consolidated handler to fire the events on.
         Handler handler = new CompositeHandler(limitHandlerProvider.provide(), exceptionHandler);
 
         while (true) {
             try {
                 handler.handlePreExec();
-                T result = provider.provide();
+                T result = caller.call();
                 result = handler.handlePostExec(result);
                 return result;
             } catch (Exception e) {
