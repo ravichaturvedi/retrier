@@ -28,7 +28,10 @@ public class TestDefaultRetrier {
 
     @Test
     public void testRetrier() throws Exception {
-        Retrier retrier = create(withRetryCount(3), withTimeout(Duration.of(15, ChronoUnit.SECONDS)));
+        Retrier retrier = create(withRetryCount(3),
+                withTimeout(Duration.of(15, ChronoUnit.SECONDS)),
+                withExpBackoffDelay(Duration.of(2, ChronoUnit.SECONDS)),
+                withLogger(System.out::println));
 
         retrier.retry(on(Exception.class), () -> {
             System.out.println("Hello");

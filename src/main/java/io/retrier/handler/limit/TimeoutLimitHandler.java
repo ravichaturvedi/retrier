@@ -15,7 +15,7 @@
  */
 package io.retrier.handler.limit;
 
-import io.retrier.Preconditions;
+import io.retrier.utils.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

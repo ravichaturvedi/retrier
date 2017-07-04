@@ -16,32 +16,33 @@
 package io.retrier;
 
 
-import io.retrier.handler.limit.CompositeLimitHandler;
-import io.retrier.handler.limit.LimitHandler;
-import io.retrier.handler.limit.LimitHandlerProvider;
-import io.retrier.handler.limit.RetryCountLimitHandler;
-import io.retrier.handler.limit.TimeoutLimitHandler;
+import io.retrier.option.Config;
+import io.retrier.option.Option;
+import io.retrier.option.Options;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Retriers {
 
-    public static Retrier create(LimitHandlerProvider firstLimitHandlerProvider, LimitHandlerProvider... otherLimitHandlerProviders) {
-        List<LimitHandler> limitHandlers = Stream.concat(Stream.of(firstLimitHandlerProvider), Stream.of(otherLimitHandlerProviders))
-                .map(LimitHandlerProvider::provide)
-                .collect(Collectors.toList());
-        return new DefaultRetrier(() -> new CompositeLimitHandler(limitHandlers.toArray(new LimitHandler[0])));
+    public static Retrier create(Option... opts) {
+        Config config = new Config();
+        new Options(opts).process(config);
+        return new DefaultRetrier(config.copy());
     }
 
-    public static LimitHandlerProvider withRetryCount(int retryCount) {
-        return () -> new RetryCountLimitHandler(retryCount);
+    public static Option withRetryCount(int retryCount) {
+        return c -> c.maxRetries = retryCount;
     }
 
-    public static LimitHandlerProvider withTimeout(Duration duration) {
-        return () -> new TimeoutLimitHandler(duration.toMillis());
+    public static Option withTimeout(Duration duration) {
+        return c -> c.timeoutDuration = duration;
+    }
+
+    public static Option withExpBackoffDelay(Duration delay) {
+        return c -> c.exponentialBackoffDuration = delay;
+    }
+
+    public static Option withLogger(Logger logger) {
+        return c -> c.logger = logger;
     }
 }

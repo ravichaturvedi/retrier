@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier;
+package io.retrier.utils;
 
 
 public class Preconditions {
 
     public static void ensureNotNull(Object o, String msg) {
-        ensure(o == null, msg);
+        ensure(o != null, msg);
     }
 
     public static void ensure(boolean test, String msg) {

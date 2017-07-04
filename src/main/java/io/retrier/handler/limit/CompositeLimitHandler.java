@@ -16,19 +16,33 @@
 package io.retrier.handler.limit;
 
 
-import io.retrier.handler.AbstractHandler;
 import io.retrier.handler.Handler;
+import io.retrier.utils.Preconditions;
 
-public class CompositeLimitHandler extends AbstractHandler implements LimitHandler {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
+
+public class CompositeLimitHandler implements LimitHandler {
+
+    private final List<Handler> handlers;
 
     public CompositeLimitHandler(LimitHandler... limitHandlers) {
-        super(limitHandlers);
+        Stream.of(limitHandlers).forEach(handler -> Preconditions.ensureNotNull(handler, "LimitHandler cannot be null."));
+        this.handlers = Collections.unmodifiableList(Arrays.asList(limitHandlers));
+    }
+
+    @Override
+    public void handlePreExec() {
+        handlers.forEach(Handler::handlePreExec);
     }
 
     @Override
     public void handleException(Exception e) throws Exception {
         // Make sure all the limit checks are successful.
-        for (Handler handler : getHandlers()) {
+        for (Handler handler : handlers) {
             handler.handleException(e);
         }
     }

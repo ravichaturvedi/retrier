@@ -16,9 +16,9 @@
 package io.retrier.handler.exception;
 
 
-import io.retrier.Preconditions;
-import io.retrier.handler.Handler;
 import io.retrier.Runner;
+import io.retrier.handler.Handler;
+import io.retrier.utils.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,20 +16,28 @@
 package io.retrier.handler.exception;
 
 
-import io.retrier.handler.AbstractHandler;
 import io.retrier.handler.Handler;
+import io.retrier.utils.Preconditions;
 
-public class CompositeExceptionHandler extends AbstractHandler implements ExceptionHandler {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
-    public CompositeExceptionHandler(Handler... handlers) {
-        super(handlers);
+public class CompositeExceptionHandler implements ExceptionHandler {
+
+    private final List<Handler> handlers;
+
+    public CompositeExceptionHandler(ExceptionHandler... exceptionHandlers) {
+        Stream.of(exceptionHandlers).forEach(handler -> Preconditions.ensureNotNull(handler, "ExceptionHandler cannot be null."));
+        this.handlers = Collections.unmodifiableList(Arrays.asList(exceptionHandlers));
     }
 
     @Override
     public void handleException(Exception e) throws Exception {
         // Try to get the exception handled by all the exception handler and
         // short-circuit on the first successful handling.
-        for (Handler handler : getHandlers()) {
+        for (Handler handler : handlers) {
             try {
                 handler.handleException(e);
                 return;

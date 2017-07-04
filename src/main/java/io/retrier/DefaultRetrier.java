@@ -18,33 +18,35 @@ package io.retrier;
 import io.retrier.handler.CompositeHandler;
 import io.retrier.handler.Handler;
 import io.retrier.handler.exception.ExceptionHandler;
-import io.retrier.handler.limit.LimitHandlerProvider;
+import io.retrier.option.Config;
+import io.retrier.utils.Preconditions;
 
-public class DefaultRetrier implements Retrier {
 
-    private final LimitHandlerProvider limitHandlerProvider;
+class DefaultRetrier implements Retrier {
 
-    public DefaultRetrier(LimitHandlerProvider limitHandlerProvider) {
-        Preconditions.ensureNotNull(limitHandlerProvider, "LimitHandlerProvider cannot be null.");
-        this.limitHandlerProvider = limitHandlerProvider;
+    private final Config config;
+
+    DefaultRetrier(Config config) {
+        Preconditions.ensureNotNull(config, "Config cannot be null.");
+        this.config = config;
     }
 
+    @Override
     public <T> T retry(ExceptionHandler exceptionHandler, Caller<T> caller) throws Exception {
-        // Create the consolidated handler to fire the events on.
-        Handler handler = new CompositeHandler(limitHandlerProvider.provide(), exceptionHandler);
+        Handler handler = new CompositeHandler(config, exceptionHandler);
 
         while (true) {
             try {
                 handler.handlePreExec();
                 T result = caller.call();
-                result = handler.handlePostExec(result);
-                return result;
+                return handler.handlePostExec(result);
             } catch (Exception e) {
                 handler.handleException(e);
             }
         }
     }
 
+    @Override
     public void retry(ExceptionHandler handler, Runner runner) throws Exception {
         retry(handler, () -> {
             runner.run();
