@@ -17,9 +17,7 @@ package io.retrier.handler;
 
 public interface Handler {
 
-  default void handlePreExec() {
-
-  }
+  default void handlePreExec() {}
 
   default <T> T handlePostExec(T result) {
     return result;

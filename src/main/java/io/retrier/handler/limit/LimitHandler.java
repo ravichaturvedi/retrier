@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler.checker;
+package io.retrier.handler.limit;
 
+import io.retrier.handler.Handler;
 
-@FunctionalInterface
-public interface CheckHandlerProvider {
-
-  CheckHandler provide();
+/**
+ * {@link LimitHandler} are {@link Handler} which keep state and exception against it.
+ */
+public interface LimitHandler extends Handler {
 }

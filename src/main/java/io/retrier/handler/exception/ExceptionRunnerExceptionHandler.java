@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler.catcher;
+package io.retrier.handler.exception;
 
 
 import io.retrier.Preconditions;
@@ -23,16 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link ExceptionRunnerCatchHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
+ * {@link ExceptionRunnerExceptionHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
  */
-public class ExceptionRunnerCatchHandler implements CatchHandler {
+public class ExceptionRunnerExceptionHandler implements ExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionRunnerCatchHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionRunnerExceptionHandler.class);
 
-  private final Class<Exception> exceptionClass;
+  private final Class<? extends Exception> exceptionClass;
   private final Runner runner;
 
-  public ExceptionRunnerCatchHandler(Class<Exception> exceptionClass, Runner runner) {
+  public ExceptionRunnerExceptionHandler(Class<? extends Exception> exceptionClass, Runner runner) {
     Preconditions.ensureNotNull(exceptionClass, "Exception class cannot be null.");
     Preconditions.ensureNotNull(runner, "Runner cannot be null.");
     this.exceptionClass = exceptionClass;
@@ -42,7 +42,7 @@ public class ExceptionRunnerCatchHandler implements CatchHandler {
   @Override
   public void handleException(Exception e) throws Exception {
     // If not able to handle the exception then raise it.
-    if (!e.getClass().isAssignableFrom(this.exceptionClass)) {
+    if (!this.exceptionClass.isAssignableFrom(e.getClass())) {
       logFailure(e);
       throw e;
     }

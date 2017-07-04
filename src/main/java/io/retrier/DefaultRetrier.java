@@ -17,21 +17,21 @@ package io.retrier;
 
 import io.retrier.handler.CompositeHandler;
 import io.retrier.handler.Handler;
-import io.retrier.handler.catcher.CatchHandler;
-import io.retrier.handler.checker.CheckHandlerProvider;
+import io.retrier.handler.exception.ExceptionHandler;
+import io.retrier.handler.limit.LimitHandlerProvider;
 
 public class DefaultRetrier implements Retrier {
 
-  private final CheckHandlerProvider checkHandlerProvider;
+  private final LimitHandlerProvider limitHandlerProvider;
 
-  public DefaultRetrier(CheckHandlerProvider checkHandlerProvider) {
-    Preconditions.ensureNotNull(checkHandlerProvider, "CheckHandlerProvider cannot be null.");
-    this.checkHandlerProvider = checkHandlerProvider;
+  public DefaultRetrier(LimitHandlerProvider limitHandlerProvider) {
+    Preconditions.ensureNotNull(limitHandlerProvider, "LimitHandlerProvider cannot be null.");
+    this.limitHandlerProvider = limitHandlerProvider;
   }
 
-  public <T> T retry(CatchHandler catchHandler, Provider<T> provider) throws Exception {
+  public <T> T retry(ExceptionHandler exceptionHandler, Provider<T> provider) throws Exception {
     // Create the consolidated handler to fire the events on.
-    Handler handler = new CompositeHandler(checkHandlerProvider.provide(), catchHandler);
+    Handler handler = new CompositeHandler(limitHandlerProvider.provide(), exceptionHandler);
 
     while (true) {
       try {
@@ -45,7 +45,7 @@ public class DefaultRetrier implements Retrier {
     }
   }
 
-  public void retry(CatchHandler handler, Runner runner) throws Exception {
+  public void retry(ExceptionHandler handler, Runner runner) throws Exception {
     retry(handler, () -> {
       runner.run();
       return null;

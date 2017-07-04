@@ -15,11 +15,11 @@
  */
 package io.retrier;
 
-import io.retrier.handler.catcher.CatchHandler;
+import io.retrier.handler.exception.ExceptionHandler;
 
 public interface Retrier {
 
-  <T> T retry(CatchHandler handler, Provider<T> provider) throws Exception;
+  <T> T retry(ExceptionHandler handler, Provider<T> provider) throws Exception;
 
-  void retry(CatchHandler handler, Runner runner) throws Exception;
+  void retry(ExceptionHandler handler, Runner runner) throws Exception;
 }

@@ -16,22 +16,22 @@
 package io.retrier;
 
 
-import io.retrier.handler.catcher.CompositeCatchHandler;
-import io.retrier.handler.catcher.ExceptionRunnerCatchHandler;
-import io.retrier.handler.catcher.ExceptionsCatchHandler;
-import io.retrier.handler.catcher.CatchHandler;
+import io.retrier.handler.exception.CompositeExceptionHandler;
+import io.retrier.handler.exception.ExceptionHandler;
+import io.retrier.handler.exception.ExceptionRunnerExceptionHandler;
+import io.retrier.handler.exception.ExceptionsExceptionHandler;
 
 public class Retry {
 
-  public static CatchHandler on(CatchHandler... handlers) {
-    return new CompositeCatchHandler(handlers);
+  public static ExceptionHandler on(ExceptionHandler... handlers) {
+    return new CompositeExceptionHandler(handlers);
   }
 
-  public static CatchHandler on(Class<Exception>... exceptionClasses) {
-    return new ExceptionsCatchHandler(exceptionClasses);
+  public static ExceptionHandler on(Class<? extends Exception>... exceptionClasses) {
+    return new ExceptionsExceptionHandler(exceptionClasses);
   }
 
-  public static CatchHandler on(Class<Exception> exceptionClass, Runner runner) {
-    return new ExceptionRunnerCatchHandler(exceptionClass, runner);
+  public static ExceptionHandler on(Class<? extends Exception> exceptionClass, Runner runner) {
+    return new ExceptionRunnerExceptionHandler(exceptionClass, runner);
   }
 }

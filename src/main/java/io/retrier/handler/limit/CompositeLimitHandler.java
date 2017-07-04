@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler.catcher;
+package io.retrier.handler.limit;
 
+
+import io.retrier.handler.AbstractHandler;
 import io.retrier.handler.Handler;
 
-/**
- * {@link CatchHandler} defines {@link Handler} which do not keep the state.
- */
-public interface CatchHandler extends Handler {
+public class CompositeLimitHandler extends AbstractHandler implements LimitHandler {
+
+  public CompositeLimitHandler(LimitHandler... limitHandlers) {
+    super(limitHandlers);
+  }
+
+  @Override
+  public void handleException(Exception e) throws Exception {
+    // Make sure all the limit checks are successful.
+    for (Handler handler : getHandlers()) {
+      handler.handleException(e);
+    }
+  }
 }

@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler.checker;
+package io.retrier.handler.exception;
 
+import io.retrier.handler.Handler;
 
-public class CompositeCheckHandler implements CheckHandler {
-
-  public CompositeCheckHandler(CheckHandler... checkHandlers) {
-  }
-
-  @Override
-  public void handleException(Exception e) throws Exception {
-
-  }
+/**
+ * {@link ExceptionHandler} defines {@link Handler} which do not keep the state.
+ */
+public interface ExceptionHandler extends Handler {
 }

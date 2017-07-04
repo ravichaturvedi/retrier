@@ -13,39 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier.handler.catcher;
+package io.retrier.handler.exception;
 
 
+import io.retrier.handler.AbstractHandler;
 import io.retrier.handler.Handler;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+public class CompositeExceptionHandler extends AbstractHandler implements ExceptionHandler {
 
-public class CompositeCatchHandler implements CatchHandler {
-
-  private final List<Handler> handlers;
-
-  public CompositeCatchHandler(Handler... handlers) {
-    this.handlers = Collections.unmodifiableList(Arrays.asList(handlers));
+  public CompositeExceptionHandler(Handler... handlers) {
+    super(handlers);
   }
 
   @Override
   public void handleException(Exception e) throws Exception {
-    // Try to get the exception handled by all the retry statichandler and short-circuit on the first successful handling.
-    for (Handler handler : handlers) {
+    // Try to get the exception handled by all the exception handler and
+    // short-circuit on the first successful handling.
+    for (Handler handler : getHandlers()) {
       try {
         handler.handleException(e);
         return;
       } catch (Exception ex) {
-        // If exception instance is not same as passed to handleException then raise it.
-        if (ex != e) {
-          throw ex;
-        }
+        // Do nothing
       }
     }
 
-    // If none of the retry handle handles the exception then propogate it.
+    // If none of the handler handles the exception then propogate it.
     throw e;
   }
 }

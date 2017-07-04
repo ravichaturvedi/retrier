@@ -16,11 +16,11 @@
 package io.retrier;
 
 
-import io.retrier.handler.checker.CheckHandler;
-import io.retrier.handler.checker.CheckHandlerProvider;
-import io.retrier.handler.checker.CompositeCheckHandler;
-import io.retrier.handler.checker.RetryCountCheckHandler;
-import io.retrier.handler.checker.TimeoutCheckHandler;
+import io.retrier.handler.limit.CompositeLimitHandler;
+import io.retrier.handler.limit.LimitHandler;
+import io.retrier.handler.limit.LimitHandlerProvider;
+import io.retrier.handler.limit.RetryCountLimitHandler;
+import io.retrier.handler.limit.TimeoutLimitHandler;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -30,18 +30,18 @@ import java.util.stream.Stream;
 
 public class Retriers {
 
-  public static Retrier create(CheckHandlerProvider firstCheckHandlerProvider, CheckHandlerProvider... otherCheckHandlerProviders) {
-    List<CheckHandler> checkHandlers = Stream.concat(Stream.of(firstCheckHandlerProvider), Stream.of(otherCheckHandlerProviders))
-        .map(CheckHandlerProvider::provide)
+  public static Retrier create(LimitHandlerProvider firstLimitHandlerProvider, LimitHandlerProvider... otherLimitHandlerProviders) {
+    List<LimitHandler> limitHandlers = Stream.concat(Stream.of(firstLimitHandlerProvider), Stream.of(otherLimitHandlerProviders))
+        .map(LimitHandlerProvider::provide)
         .collect(Collectors.toList());
-    return new DefaultRetrier(() -> new CompositeCheckHandler(checkHandlers.toArray(new CheckHandler[0])));
+    return new DefaultRetrier(() -> new CompositeLimitHandler(limitHandlers.toArray(new LimitHandler[0])));
   }
 
-  public static CheckHandlerProvider withRetryCount(int retryCount) {
-    return () -> new RetryCountCheckHandler(retryCount);
+  public static LimitHandlerProvider withRetryCount(int retryCount) {
+    return () -> new RetryCountLimitHandler(retryCount);
   }
 
-  public static CheckHandlerProvider withTimeout(Duration duration) {
-    return () -> new TimeoutCheckHandler(duration.get(ChronoUnit.MILLIS));
+  public static LimitHandlerProvider withTimeout(Duration duration) {
+    return () -> new TimeoutLimitHandler(duration.toMillis());
   }
 }
