@@ -28,41 +28,41 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RetryCountLimitHandler implements LimitHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RetryCountLimitHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RetryCountLimitHandler.class);
 
-  private final int maxRetries;
-  private final AtomicInteger retryCount;
+    private final int maxRetries;
+    private final AtomicInteger retryCount;
 
-  public RetryCountLimitHandler(int maxRetries) {
-    Preconditions.ensure(maxRetries > 0, "Max retry count should be positive.");
-    this.maxRetries = maxRetries;
-    this.retryCount = new AtomicInteger();
-  }
-
-  @Override
-  public void handlePreExec() {
-    retryCount.incrementAndGet();
-  }
-
-  @Override
-  public void handleException(Exception e) throws Exception {
-    if (retryCount.get() >= maxRetries) {
-      logFailure();
-      throw e;
+    public RetryCountLimitHandler(int maxRetries) {
+        Preconditions.ensure(maxRetries > 0, "Max retry count should be positive.");
+        this.maxRetries = maxRetries;
+        this.retryCount = new AtomicInteger();
     }
 
-    logSuccess();
-  }
-
-  private void logFailure() {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exceeded Max Retries of ", maxRetries);
+    @Override
+    public void handlePreExec() {
+        retryCount.incrementAndGet();
     }
-  }
 
-  private void logSuccess() {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Current retry count'{}' is within max retries limit '{}'", retryCount.get(), maxRetries);
+    @Override
+    public void handleException(Exception e) throws Exception {
+        if (retryCount.get() >= maxRetries) {
+            logFailure();
+            throw e;
+        }
+
+        logSuccess();
     }
-  }
+
+    private void logFailure() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exceeded Max Retries of ", maxRetries);
+        }
+    }
+
+    private void logSuccess() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Current retry count'{}' is within max retries limit '{}'", retryCount.get(), maxRetries);
+        }
+    }
 }

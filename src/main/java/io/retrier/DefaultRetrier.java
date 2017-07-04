@@ -22,33 +22,33 @@ import io.retrier.handler.limit.LimitHandlerProvider;
 
 public class DefaultRetrier implements Retrier {
 
-  private final LimitHandlerProvider limitHandlerProvider;
+    private final LimitHandlerProvider limitHandlerProvider;
 
-  public DefaultRetrier(LimitHandlerProvider limitHandlerProvider) {
-    Preconditions.ensureNotNull(limitHandlerProvider, "LimitHandlerProvider cannot be null.");
-    this.limitHandlerProvider = limitHandlerProvider;
-  }
-
-  public <T> T retry(ExceptionHandler exceptionHandler, Provider<T> provider) throws Exception {
-    // Create the consolidated handler to fire the events on.
-    Handler handler = new CompositeHandler(limitHandlerProvider.provide(), exceptionHandler);
-
-    while (true) {
-      try {
-        handler.handlePreExec();
-        T result = provider.provide();
-        result = handler.handlePostExec(result);
-        return result;
-      } catch (Exception e) {
-        handler.handleException(e);
-      }
+    public DefaultRetrier(LimitHandlerProvider limitHandlerProvider) {
+        Preconditions.ensureNotNull(limitHandlerProvider, "LimitHandlerProvider cannot be null.");
+        this.limitHandlerProvider = limitHandlerProvider;
     }
-  }
 
-  public void retry(ExceptionHandler handler, Runner runner) throws Exception {
-    retry(handler, () -> {
-      runner.run();
-      return null;
-    });
-  }
+    public <T> T retry(ExceptionHandler exceptionHandler, Provider<T> provider) throws Exception {
+        // Create the consolidated handler to fire the events on.
+        Handler handler = new CompositeHandler(limitHandlerProvider.provide(), exceptionHandler);
+
+        while (true) {
+            try {
+                handler.handlePreExec();
+                T result = provider.provide();
+                result = handler.handlePostExec(result);
+                return result;
+            } catch (Exception e) {
+                handler.handleException(e);
+            }
+        }
+    }
+
+    public void retry(ExceptionHandler handler, Runner runner) throws Exception {
+        retry(handler, () -> {
+            runner.run();
+            return null;
+        });
+    }
 }

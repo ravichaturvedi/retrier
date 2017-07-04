@@ -23,15 +23,15 @@ import io.retrier.handler.exception.ExceptionsExceptionHandler;
 
 public class Retry {
 
-  public static ExceptionHandler on(ExceptionHandler... handlers) {
-    return new CompositeExceptionHandler(handlers);
-  }
+    public static ExceptionHandler on(ExceptionHandler... handlers) {
+        return new CompositeExceptionHandler(handlers);
+    }
 
-  public static ExceptionHandler on(Class<? extends Exception>... exceptionClasses) {
-    return new ExceptionsExceptionHandler(exceptionClasses);
-  }
+    public static ExceptionHandler on(Class<? extends Exception>... exceptionClasses) {
+        return new ExceptionsExceptionHandler(exceptionClasses);
+    }
 
-  public static ExceptionHandler on(Class<? extends Exception> exceptionClass, Runner runner) {
-    return new ExceptionRunnerExceptionHandler(exceptionClass, runner);
-  }
+    public static ExceptionHandler on(Class<? extends Exception> exceptionClass, Runner runner) {
+        return new ExceptionRunnerExceptionHandler(exceptionClass, runner);
+    }
 }

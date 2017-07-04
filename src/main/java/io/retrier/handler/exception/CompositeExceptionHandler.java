@@ -21,24 +21,24 @@ import io.retrier.handler.Handler;
 
 public class CompositeExceptionHandler extends AbstractHandler implements ExceptionHandler {
 
-  public CompositeExceptionHandler(Handler... handlers) {
-    super(handlers);
-  }
-
-  @Override
-  public void handleException(Exception e) throws Exception {
-    // Try to get the exception handled by all the exception handler and
-    // short-circuit on the first successful handling.
-    for (Handler handler : getHandlers()) {
-      try {
-        handler.handleException(e);
-        return;
-      } catch (Exception ex) {
-        // Do nothing
-      }
+    public CompositeExceptionHandler(Handler... handlers) {
+        super(handlers);
     }
 
-    // If none of the handler handles the exception then propogate it.
-    throw e;
-  }
+    @Override
+    public void handleException(Exception e) throws Exception {
+        // Try to get the exception handled by all the exception handler and
+        // short-circuit on the first successful handling.
+        for (Handler handler : getHandlers()) {
+            try {
+                handler.handleException(e);
+                return;
+            } catch (Exception ex) {
+                // Do nothing
+            }
+        }
+
+        // If none of the handler handles the exception then propogate it.
+        throw e;
+    }
 }

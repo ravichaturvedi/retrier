@@ -18,15 +18,15 @@ package io.retrier;
 
 public class Preconditions {
 
-  public static void ensureNotNull(Object o, String msg) {
-    if (o == null) {
-      throw new IllegalArgumentException(msg);
+    public static void ensureNotNull(Object o, String msg) {
+        if (o == null) {
+            throw new IllegalArgumentException(msg);
+        }
     }
-  }
 
-  public static void ensure(boolean test, String msg) {
-    if (!test) {
-      throw new IllegalArgumentException(msg);
+    public static void ensure(boolean test, String msg) {
+        if (!test) {
+            throw new IllegalArgumentException(msg);
+        }
     }
-  }
 }

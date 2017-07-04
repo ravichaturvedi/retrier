@@ -27,41 +27,41 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class TimeoutLimitHandler implements LimitHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutLimitHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutLimitHandler.class);
 
-  private final long timeoutInMillisec;
-  private final AtomicLong startTimeInMillisec;
+    private final long timeoutInMillisec;
+    private final AtomicLong startTimeInMillisec;
 
-  public TimeoutLimitHandler(long timeoutInMillisec) {
-    Preconditions.ensure(timeoutInMillisec > 0, "Timeout should be positive.");
-    this.timeoutInMillisec = timeoutInMillisec;
-    this.startTimeInMillisec = new AtomicLong(0);
-  }
-
-  @Override
-  public void handlePreExec() {
-    startTimeInMillisec.compareAndSet(0, System.currentTimeMillis());
-  }
-
-  @Override
-  public void handleException(Exception e) throws Exception {
-    if (System.currentTimeMillis() - startTimeInMillisec.get() > timeoutInMillisec) {
-      logFailure();
-      throw e;
+    public TimeoutLimitHandler(long timeoutInMillisec) {
+        Preconditions.ensure(timeoutInMillisec > 0, "Timeout should be positive.");
+        this.timeoutInMillisec = timeoutInMillisec;
+        this.startTimeInMillisec = new AtomicLong(0);
     }
 
-    logSuccess();
-  }
-
-  private void logFailure() {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Exceeded Timeout (in millisec): {}", timeoutInMillisec);
+    @Override
+    public void handlePreExec() {
+        startTimeInMillisec.compareAndSet(0, System.currentTimeMillis());
     }
-  }
 
-  private void logSuccess() {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Still have {}ms to retry.", System.currentTimeMillis() - startTimeInMillisec.get());
+    @Override
+    public void handleException(Exception e) throws Exception {
+        if (System.currentTimeMillis() - startTimeInMillisec.get() > timeoutInMillisec) {
+            logFailure();
+            throw e;
+        }
+
+        logSuccess();
     }
-  }
+
+    private void logFailure() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exceeded Timeout (in millisec): {}", timeoutInMillisec);
+        }
+    }
+
+    private void logSuccess() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Still have {}ms to retry.", System.currentTimeMillis() - startTimeInMillisec.get());
+        }
+    }
 }

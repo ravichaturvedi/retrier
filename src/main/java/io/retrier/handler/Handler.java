@@ -17,11 +17,12 @@ package io.retrier.handler;
 
 public interface Handler {
 
-  default void handlePreExec() {}
+    default void handlePreExec() {
+    }
 
-  default <T> T handlePostExec(T result) {
-    return result;
-  }
+    default <T> T handlePostExec(T result) {
+        return result;
+    }
 
-  void handleException(Exception e) throws Exception;
+    void handleException(Exception e) throws Exception;
 }

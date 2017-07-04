@@ -30,18 +30,18 @@ import java.util.stream.Stream;
 
 public class Retriers {
 
-  public static Retrier create(LimitHandlerProvider firstLimitHandlerProvider, LimitHandlerProvider... otherLimitHandlerProviders) {
-    List<LimitHandler> limitHandlers = Stream.concat(Stream.of(firstLimitHandlerProvider), Stream.of(otherLimitHandlerProviders))
-        .map(LimitHandlerProvider::provide)
-        .collect(Collectors.toList());
-    return new DefaultRetrier(() -> new CompositeLimitHandler(limitHandlers.toArray(new LimitHandler[0])));
-  }
+    public static Retrier create(LimitHandlerProvider firstLimitHandlerProvider, LimitHandlerProvider... otherLimitHandlerProviders) {
+        List<LimitHandler> limitHandlers = Stream.concat(Stream.of(firstLimitHandlerProvider), Stream.of(otherLimitHandlerProviders))
+                .map(LimitHandlerProvider::provide)
+                .collect(Collectors.toList());
+        return new DefaultRetrier(() -> new CompositeLimitHandler(limitHandlers.toArray(new LimitHandler[0])));
+    }
 
-  public static LimitHandlerProvider withRetryCount(int retryCount) {
-    return () -> new RetryCountLimitHandler(retryCount);
-  }
+    public static LimitHandlerProvider withRetryCount(int retryCount) {
+        return () -> new RetryCountLimitHandler(retryCount);
+    }
 
-  public static LimitHandlerProvider withTimeout(Duration duration) {
-    return () -> new TimeoutLimitHandler(duration.toMillis());
-  }
+    public static LimitHandlerProvider withTimeout(Duration duration) {
+        return () -> new TimeoutLimitHandler(duration.toMillis());
+    }
 }

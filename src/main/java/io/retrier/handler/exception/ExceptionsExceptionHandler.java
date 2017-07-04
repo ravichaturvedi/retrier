@@ -29,46 +29,46 @@ import java.util.stream.Stream;
 
 /**
  * {@link ExceptionsExceptionHandler} is a {@link Handler} implementation to catch the provided exceptions while retrying.
- *
+ * <p>
  * It is similar to mentioning exceptions in catch block and consuming it.
  * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen again.
  */
 public class ExceptionsExceptionHandler implements ExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionsExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionsExceptionHandler.class);
 
-  // Exception classes to be handled.
-  private final List<Class<? extends Exception>> exceptionClasses;
+    // Exception classes to be handled.
+    private final List<Class<? extends Exception>> exceptionClasses;
 
-  public ExceptionsExceptionHandler(Class<? extends Exception>... exceptionClasses) {
-    Stream.of(exceptionClasses).forEach(cls -> Preconditions.ensureNotNull(cls, "Exception class cannot be null."));
-    this.exceptionClasses = Collections.unmodifiableList(Arrays.asList(exceptionClasses));
-  }
-
-  @Override
-  public void handleException(Exception e) throws Exception {
-    Optional<Class<? extends Exception>> classHandlingException = exceptionClasses.stream()
-        .filter(cls -> cls.isAssignableFrom(e.getClass()))
-        .findAny();
-
-    // Raise the incoming exception, if the exception cannot be handled by any of the exception classes provided in constructor.
-    if (!classHandlingException.isPresent()) {
-      logFailure(e);
-      throw e;
+    public ExceptionsExceptionHandler(Class<? extends Exception>... exceptionClasses) {
+        Stream.of(exceptionClasses).forEach(cls -> Preconditions.ensureNotNull(cls, "Exception class cannot be null."));
+        this.exceptionClasses = Collections.unmodifiableList(Arrays.asList(exceptionClasses));
     }
 
-    logSuccess(e, classHandlingException.get());
-  }
+    @Override
+    public void handleException(Exception e) throws Exception {
+        Optional<Class<? extends Exception>> classHandlingException = exceptionClasses.stream()
+                .filter(cls -> cls.isAssignableFrom(e.getClass()))
+                .findAny();
 
-  private void logFailure(Exception e) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Not able to handle the exception: {}", e);
-    }
-  }
+        // Raise the incoming exception, if the exception cannot be handled by any of the exception classes provided in constructor.
+        if (!classHandlingException.isPresent()) {
+            logFailure(e);
+            throw e;
+        }
 
-  private void logSuccess(Exception e, Class<? extends Exception> exceptionClass) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("'{}' is handled by Exception Class '{}'.", e, exceptionClass);
+        logSuccess(e, classHandlingException.get());
     }
-  }
+
+    private void logFailure(Exception e) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Not able to handle the exception: {}", e);
+        }
+    }
+
+    private void logSuccess(Exception e, Class<? extends Exception> exceptionClass) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("'{}' is handled by Exception Class '{}'.", e, exceptionClass);
+        }
+    }
 }

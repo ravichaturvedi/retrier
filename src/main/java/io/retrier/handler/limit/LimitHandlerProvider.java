@@ -19,5 +19,5 @@ package io.retrier.handler.limit;
 @FunctionalInterface
 public interface LimitHandlerProvider {
 
-  LimitHandler provide();
+    LimitHandler provide();
 }

@@ -21,15 +21,15 @@ import io.retrier.handler.Handler;
 
 public class CompositeLimitHandler extends AbstractHandler implements LimitHandler {
 
-  public CompositeLimitHandler(LimitHandler... limitHandlers) {
-    super(limitHandlers);
-  }
-
-  @Override
-  public void handleException(Exception e) throws Exception {
-    // Make sure all the limit checks are successful.
-    for (Handler handler : getHandlers()) {
-      handler.handleException(e);
+    public CompositeLimitHandler(LimitHandler... limitHandlers) {
+        super(limitHandlers);
     }
-  }
+
+    @Override
+    public void handleException(Exception e) throws Exception {
+        // Make sure all the limit checks are successful.
+        for (Handler handler : getHandlers()) {
+            handler.handleException(e);
+        }
+    }
 }

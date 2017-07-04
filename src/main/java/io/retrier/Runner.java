@@ -22,9 +22,10 @@ package io.retrier;
 @FunctionalInterface
 public interface Runner {
 
-  /**
-   * Run the implementation
-   * @throws Exception If underlying implementation throws.
-   */
-  void run() throws Exception;
+    /**
+     * Run the implementation
+     *
+     * @throws Exception If underlying implementation throws.
+     */
+    void run() throws Exception;
 }

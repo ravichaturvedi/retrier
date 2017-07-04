@@ -27,40 +27,40 @@ import org.slf4j.LoggerFactory;
  */
 public class ExceptionRunnerExceptionHandler implements ExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionRunnerExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionRunnerExceptionHandler.class);
 
-  private final Class<? extends Exception> exceptionClass;
-  private final Runner runner;
+    private final Class<? extends Exception> exceptionClass;
+    private final Runner runner;
 
-  public ExceptionRunnerExceptionHandler(Class<? extends Exception> exceptionClass, Runner runner) {
-    Preconditions.ensureNotNull(exceptionClass, "Exception class cannot be null.");
-    Preconditions.ensureNotNull(runner, "Runner cannot be null.");
-    this.exceptionClass = exceptionClass;
-    this.runner = runner;
-  }
-
-  @Override
-  public void handleException(Exception e) throws Exception {
-    // If not able to handle the exception then raise it.
-    if (!this.exceptionClass.isAssignableFrom(e.getClass())) {
-      logFailure(e);
-      throw e;
+    public ExceptionRunnerExceptionHandler(Class<? extends Exception> exceptionClass, Runner runner) {
+        Preconditions.ensureNotNull(exceptionClass, "Exception class cannot be null.");
+        Preconditions.ensureNotNull(runner, "Runner cannot be null.");
+        this.exceptionClass = exceptionClass;
+        this.runner = runner;
     }
 
-    // Otherwise run the provided runner.
-    logSuccess(e);
-    this.runner.run();
-  }
+    @Override
+    public void handleException(Exception e) throws Exception {
+        // If not able to handle the exception then raise it.
+        if (!this.exceptionClass.isAssignableFrom(e.getClass())) {
+            logFailure(e);
+            throw e;
+        }
 
-  private void logFailure(Exception e) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Not able to handle the exception: {}", e);
+        // Otherwise run the provided runner.
+        logSuccess(e);
+        this.runner.run();
     }
-  }
 
-  private void logSuccess(Exception e) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("'{}' is handled by Exception Class '{}'.", e, exceptionClass);
+    private void logFailure(Exception e) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Not able to handle the exception: {}", e);
+        }
     }
-  }
+
+    private void logSuccess(Exception e) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("'{}' is handled by Exception Class '{}'.", e, exceptionClass);
+        }
+    }
 }

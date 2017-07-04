@@ -26,33 +26,33 @@ import java.util.stream.Stream;
 
 public abstract class AbstractHandler implements Handler {
 
-  private final List<Handler> handlers;
+    private final List<Handler> handlers;
 
-  public AbstractHandler(Handler... handlers) {
-    Stream.of(handlers).forEach(handler -> Preconditions.ensureNotNull(handler, "Handler cannot be null."));
-    this.handlers = Collections.unmodifiableList(Arrays.asList(handlers));
-  }
-
-  protected List<Handler> getHandlers() {
-    return handlers;
-  }
-
-  @Override
-  public void handlePreExec() {
-    handlers.forEach(Handler::handlePreExec);
-  }
-
-  @Override
-  public <T> T handlePostExec(T result) {
-    // Respond back from the first handler which transforms the result
-    for (Handler handler : handlers) {
-      T resp = handler.handlePostExec(result);
-      if (resp != result) {
-        return resp;
-      }
+    public AbstractHandler(Handler... handlers) {
+        Stream.of(handlers).forEach(handler -> Preconditions.ensureNotNull(handler, "Handler cannot be null."));
+        this.handlers = Collections.unmodifiableList(Arrays.asList(handlers));
     }
 
-    // Otherwise return back the result itself.
-    return result;
-  }
+    protected List<Handler> getHandlers() {
+        return handlers;
+    }
+
+    @Override
+    public void handlePreExec() {
+        handlers.forEach(Handler::handlePreExec);
+    }
+
+    @Override
+    public <T> T handlePostExec(T result) {
+        // Respond back from the first handler which transforms the result
+        for (Handler handler : handlers) {
+            T resp = handler.handlePostExec(result);
+            if (resp != result) {
+                return resp;
+            }
+        }
+
+        // Otherwise return back the result itself.
+        return result;
+    }
 }

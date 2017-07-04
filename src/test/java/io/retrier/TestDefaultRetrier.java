@@ -26,13 +26,13 @@ import static io.retrier.Retry.*;
 
 public class TestDefaultRetrier {
 
-  @Test
-  public void testRetrier() throws Exception {
-    Retrier retrier = create(withRetryCount(3), withTimeout(Duration.of(15, ChronoUnit.SECONDS)));
+    @Test
+    public void testRetrier() throws Exception {
+        Retrier retrier = create(withRetryCount(3), withTimeout(Duration.of(15, ChronoUnit.SECONDS)));
 
-    retrier.retry(on(Exception.class), () -> {
-      System.out.println("Hello");
-      throw new IllegalArgumentException("123");
-    });
-  }
+        retrier.retry(on(Exception.class), () -> {
+            System.out.println("Hello");
+            throw new IllegalArgumentException("123");
+        });
+    }
 }
