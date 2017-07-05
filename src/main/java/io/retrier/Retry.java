@@ -29,10 +29,19 @@ public class Retry {
 
     @SafeVarargs
     public static ExceptionHandler on(Class<? extends Exception>... exceptionClasses) {
-        return new ExceptionsExceptionHandler(exceptionClasses);
+        return new ExceptionsExceptionHandler(false, exceptionClasses);
     }
 
     public static ExceptionHandler on(Class<? extends Exception> exceptionClass, Runner runner) {
-        return new ExceptionRunnerExceptionHandler(exceptionClass, runner);
+        return new ExceptionRunnerExceptionHandler(false, exceptionClass, runner);
+    }
+
+    @SafeVarargs
+    public static ExceptionHandler onNested(Class<? extends Exception>... exceptionClasses) {
+        return new ExceptionsExceptionHandler(true, exceptionClasses);
+    }
+
+    public static ExceptionHandler onNested(Class<? extends Exception> exceptionClass, Runner runner) {
+        return new ExceptionRunnerExceptionHandler(true, exceptionClass, runner);
     }
 }

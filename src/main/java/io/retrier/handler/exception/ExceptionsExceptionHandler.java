@@ -16,6 +16,7 @@
 package io.retrier.handler.exception;
 
 
+import io.retrier.Exceptions;
 import io.retrier.handler.AbstractTraceable;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
@@ -36,16 +37,19 @@ public class ExceptionsExceptionHandler extends AbstractTraceable implements Exc
 
     // Exception classes to be handled.
     private final List<Class<? extends Exception>> exceptionClasses;
+    private final boolean nested;
 
-    public ExceptionsExceptionHandler(Class<? extends Exception>... exceptionClasses) {
+    public ExceptionsExceptionHandler(boolean nested, Class<? extends Exception>... exceptionClasses) {
         Stream.of(exceptionClasses).forEach(cls -> Preconditions.ensureNotNull(cls, "Exception class cannot be null."));
         this.exceptionClasses = Collections.unmodifiableList(Arrays.asList(exceptionClasses));
+        this.nested = nested;
     }
 
     @Override
     public void handleException(Exception e) throws Exception {
+        List<Class<? extends Exception>> exceptionClasses = nested ? Exceptions.getNestedExceptionClasses(e): Collections.singletonList(e.getClass());
         Optional<Class<? extends Exception>> classHandlingException = exceptionClasses.stream()
-                .filter(cls -> cls.isAssignableFrom(e.getClass()))
+                .filter(cls -> exceptionClasses.stream().map(cls::isAssignableFrom).findAny().isPresent())
                 .findAny();
 
         // Raise the incoming exception, if the exception cannot be handled by any of the exception classes provided in constructor.

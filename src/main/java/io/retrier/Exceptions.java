@@ -16,6 +16,9 @@
 package io.retrier;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Exceptions {
 
     /**
@@ -49,6 +52,34 @@ public class Exceptions {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the classes of all nested exception classes along with provided exception class,
+     * wrapped within the provided exception.
+     *
+     * @param e
+     * @return
+     */
+    public static List<Class<? extends Exception>> getNestedExceptionClasses(Exception e) {
+        List<Class<? extends Exception>> exceptionClasses = new ArrayList<>();
+
+        while (true) {
+            // If the exception is null then return the set.
+            if (e == null) {
+                return exceptionClasses;
+            }
+
+            // Add the class of the provided exception.
+            exceptionClasses.add(e.getClass());
+
+            // If the cause is an instance of Exception then only add it to the list, otherwise set the exception to null;
+            if (e.getCause() instanceof Exception) {
+                e = (Exception)e.getCause();
+            } else {
+                e = null;
+            }
         }
     }
 }

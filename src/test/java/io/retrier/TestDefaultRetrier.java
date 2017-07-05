@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.retrier.Retriers.*;
@@ -54,4 +55,54 @@ public class TestDefaultRetrier {
 
         assertThat(count.get(), is(2));
     }
+
+    @Test
+    public void testNestedException() throws Exception {
+        Retrier retrier = create(withRetryCount(3),
+                withTrace(System.out::println));
+
+        AtomicInteger count = new AtomicInteger(0);
+
+        try {
+            retrier.retry(onNested(IllegalArgumentException.class), () -> {
+                count.incrementAndGet();
+                System.out.println("Hello");
+                throw new RuntimeException(new RuntimeException(new IllegalArgumentException("123")));
+            });
+            fail("Should have got RuntimeException.");
+        } catch (Exception e) {
+            assertThat(e.getClass(), is(equalTo(RuntimeException.class)));
+        }
+
+        assertThat(count.get(), is(3));
+    }
+
+    @Test
+    public void testNestedRunnableException() throws Exception {
+        Retrier retrier = create(withRetryCount(3),
+                withTrace(System.out::println));
+
+        AtomicInteger count = new AtomicInteger(0);
+        AtomicBoolean result = new AtomicBoolean(false);
+        AtomicInteger nestedHandlerRun = new AtomicInteger(0);
+
+        try {
+            retrier.retry(onNested(IllegalArgumentException.class, () -> {
+                result.set(true);
+                nestedHandlerRun.incrementAndGet();
+            }), () -> {
+                count.incrementAndGet();
+                System.out.println("Hello");
+                throw new RuntimeException(new RuntimeException(new IllegalArgumentException("123")));
+            });
+            fail("Should have got RuntimeException.");
+        } catch (Exception e) {
+            assertThat(e.getClass(), is(equalTo(RuntimeException.class)));
+        }
+
+        assertThat(count.get(), is(3));
+        assertThat(nestedHandlerRun.get(), is(2));
+        assertThat(result.get(), is(true));
+    }
+
 }

@@ -15,10 +15,14 @@
  */
 package io.retrier.handler.exception;
 
+import io.retrier.Exceptions;
 import io.retrier.Runner;
 import io.retrier.handler.AbstractTraceable;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * {@link ExceptionRunnerExceptionHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
@@ -27,18 +31,22 @@ public class ExceptionRunnerExceptionHandler extends AbstractTraceable implement
 
     private final Class<? extends Exception> exceptionClass;
     private final Runner runner;
+    private final boolean nested;
 
-    public ExceptionRunnerExceptionHandler(Class<? extends Exception> exceptionClass, Runner runner) {
+    public ExceptionRunnerExceptionHandler(boolean nested, Class<? extends Exception> exceptionClass, Runner runner) {
         Preconditions.ensureNotNull(exceptionClass, "Exception class cannot be null.");
         Preconditions.ensureNotNull(runner, "Runner cannot be null.");
         this.exceptionClass = exceptionClass;
         this.runner = runner;
+        this.nested = nested;
     }
 
     @Override
     public void handleException(Exception e) throws Exception {
+        List<Class<? extends Exception>> exceptionClasses = nested ? Exceptions.getNestedExceptionClasses(e): Collections.singletonList(e.getClass());
+
         // If not able to handle the exception then raise it.
-        if (!this.exceptionClass.isAssignableFrom(e.getClass())) {
+        if (!exceptionClasses.stream().map(this.exceptionClass::isAssignableFrom).findAny().isPresent()) {
             trace(() -> String.format("Unknown Exception: %s", e));
             throw e;
         }
