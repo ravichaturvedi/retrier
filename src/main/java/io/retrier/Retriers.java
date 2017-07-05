@@ -44,7 +44,7 @@ public class Retriers {
 
     public static Option withExpBackoff(Duration delay, Duration maxDelay) {
         return c -> {
-            withExpBackoff(delay);
+            withExpBackoff(delay).process(c);
             c.expBackoffMaxDuration = maxDelay;
         };
     }
