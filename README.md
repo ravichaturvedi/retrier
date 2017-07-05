@@ -22,7 +22,7 @@ retry(() -> {
 });
 ```
 
-* `Retry.retry` is using the default `Retrier` with Retry Count `3`, Exponential Backoff Delay of `1 second` and retry timeout duration of 15 second. 
+* `Retry.retry` is using the default `Retrier` with Retry Count `3`, Exponential Backoff initial Delay of `1 second` and retry timeout duration of `15 second`. 
 
 ## Background
 Generally, we call an external system/service using some RPC mechanism (REST/GRPC/etc..) but we immediately inform about the failure to the client/user.
