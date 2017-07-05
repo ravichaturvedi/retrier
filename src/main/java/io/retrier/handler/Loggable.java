@@ -15,14 +15,10 @@
  */
 package io.retrier.handler;
 
-public interface Handler extends Loggable {
+import io.retrier.Logger;
 
-    default void handlePreExec() {
-    }
 
-    default <T> T handlePostExec(T result) {
-        return result;
-    }
+public interface Loggable {
 
-    void handleException(Exception e) throws Exception;
+    void setLogger(Logger logger);
 }

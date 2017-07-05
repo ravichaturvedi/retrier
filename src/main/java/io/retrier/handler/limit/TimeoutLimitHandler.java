@@ -15,19 +15,17 @@
  */
 package io.retrier.handler.limit;
 
+import io.retrier.handler.AbstractLoggable;
 import io.retrier.utils.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
  * {@link TimeoutLimitHandler} is a {@link LimitHandler} implementation to make sure retry is happening within the max timeout provided.
  */
-public class TimeoutLimitHandler implements LimitHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutLimitHandler.class);
+public class TimeoutLimitHandler extends AbstractLoggable implements LimitHandler {
 
     private final long timeoutInMillisec;
     private final AtomicLong startTimeInMillisec;
@@ -45,23 +43,12 @@ public class TimeoutLimitHandler implements LimitHandler {
 
     @Override
     public void handleException(Exception e) throws Exception {
-        if (System.currentTimeMillis() - startTimeInMillisec.get() > timeoutInMillisec) {
-            logFailure();
+        long elapsedTimeInMillisec = System.currentTimeMillis() - startTimeInMillisec.get();
+        if (elapsedTimeInMillisec > timeoutInMillisec) {
+            log(() -> String.format("Exceeded Timeout of %s", Duration.ofMillis(timeoutInMillisec)));
             throw e;
         }
 
-        logSuccess();
-    }
-
-    private void logFailure() {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exceeded Timeout (in millisec): {}", timeoutInMillisec);
-        }
-    }
-
-    private void logSuccess() {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Still have {}ms to retry.", System.currentTimeMillis() - startTimeInMillisec.get());
-        }
+        log(() -> String.format("Remaining time: %s", Duration.ofMillis(timeoutInMillisec - elapsedTimeInMillisec)));
     }
 }

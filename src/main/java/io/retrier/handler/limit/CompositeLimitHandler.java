@@ -16,6 +16,7 @@
 package io.retrier.handler.limit;
 
 
+import io.retrier.Logger;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
 
@@ -27,11 +28,16 @@ import java.util.stream.Stream;
 
 public class CompositeLimitHandler implements LimitHandler {
 
-    private final List<Handler> handlers;
+    private final List<LimitHandler> handlers;
 
     public CompositeLimitHandler(LimitHandler... limitHandlers) {
         Stream.of(limitHandlers).forEach(handler -> Preconditions.ensureNotNull(handler, "LimitHandler cannot be null."));
         this.handlers = Collections.unmodifiableList(Arrays.asList(limitHandlers));
+    }
+
+    @Override
+    public void setLogger(Logger logger) {
+        handlers.forEach(handler -> handler.setLogger(logger));
     }
 
     @Override

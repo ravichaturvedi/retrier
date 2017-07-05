@@ -15,19 +15,15 @@
  */
 package io.retrier.handler.exception;
 
-
 import io.retrier.Runner;
+import io.retrier.handler.AbstractLoggable;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link ExceptionRunnerExceptionHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
  */
-public class ExceptionRunnerExceptionHandler implements ExceptionHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionRunnerExceptionHandler.class);
+public class ExceptionRunnerExceptionHandler extends AbstractLoggable implements ExceptionHandler {
 
     private final Class<? extends Exception> exceptionClass;
     private final Runner runner;
@@ -43,24 +39,12 @@ public class ExceptionRunnerExceptionHandler implements ExceptionHandler {
     public void handleException(Exception e) throws Exception {
         // If not able to handle the exception then raise it.
         if (!this.exceptionClass.isAssignableFrom(e.getClass())) {
-            logFailure(e);
+            log(() -> String.format("Unknown Exception: %s", e));
             throw e;
         }
 
         // Otherwise run the provided runner.
-        logSuccess(e);
+        log(() -> String.format("Caught Exception: '%s' by '%s'", e, exceptionClass));
         this.runner.run();
-    }
-
-    private void logFailure(Exception e) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Not able to handle the exception: {}", e);
-        }
-    }
-
-    private void logSuccess(Exception e) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("'{}' is handled by Exception Class '{}'.", e, exceptionClass);
-        }
     }
 }

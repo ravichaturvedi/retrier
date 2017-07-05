@@ -16,6 +16,7 @@
 package io.retrier.handler.exception;
 
 
+import io.retrier.Logger;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
 
@@ -26,11 +27,16 @@ import java.util.stream.Stream;
 
 public class CompositeExceptionHandler implements ExceptionHandler {
 
-    private final List<Handler> handlers;
+    private final List<ExceptionHandler> handlers;
 
     public CompositeExceptionHandler(ExceptionHandler... exceptionHandlers) {
         Stream.of(exceptionHandlers).forEach(handler -> Preconditions.ensureNotNull(handler, "ExceptionHandler cannot be null."));
         this.handlers = Collections.unmodifiableList(Arrays.asList(exceptionHandlers));
+    }
+
+    @Override
+    public void setLogger(Logger logger) {
+        handlers.forEach(handler -> handler.setLogger(logger));
     }
 
     @Override

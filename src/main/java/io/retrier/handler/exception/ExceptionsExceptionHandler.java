@@ -16,10 +16,9 @@
 package io.retrier.handler.exception;
 
 
+import io.retrier.handler.AbstractLoggable;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,9 +32,7 @@ import java.util.stream.Stream;
  * It is similar to mentioning exceptions in catch block and consuming it.
  * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen again.
  */
-public class ExceptionsExceptionHandler implements ExceptionHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionsExceptionHandler.class);
+public class ExceptionsExceptionHandler extends AbstractLoggable implements ExceptionHandler {
 
     // Exception classes to be handled.
     private final List<Class<? extends Exception>> exceptionClasses;
@@ -53,22 +50,10 @@ public class ExceptionsExceptionHandler implements ExceptionHandler {
 
         // Raise the incoming exception, if the exception cannot be handled by any of the exception classes provided in constructor.
         if (!classHandlingException.isPresent()) {
-            logFailure(e);
+            log(() -> String.format("Unknown Exception: %s", e));
             throw e;
         }
 
-        logSuccess(e, classHandlingException.get());
-    }
-
-    private void logFailure(Exception e) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Not able to handle the exception: {}", e);
-        }
-    }
-
-    private void logSuccess(Exception e, Class<? extends Exception> exceptionClass) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("'{}' is handled by Exception Class '{}'.", e, exceptionClass);
-        }
+        log(() -> String.format("Caught Exception: '%s' by '%s'", e, classHandlingException.get()));
     }
 }

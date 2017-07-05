@@ -16,9 +16,8 @@
 package io.retrier.handler.limit;
 
 
+import io.retrier.handler.AbstractLoggable;
 import io.retrier.utils.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,9 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * {@link RetryCountLimitHandler} is a {@link LimitHandler} implementation to make sure retry is happening within the max retries limit.
  */
-public class RetryCountLimitHandler implements LimitHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RetryCountLimitHandler.class);
+public class RetryCountLimitHandler extends AbstractLoggable implements LimitHandler {
 
     private final int maxRetries;
     private final AtomicInteger retryCount;
@@ -47,22 +44,10 @@ public class RetryCountLimitHandler implements LimitHandler {
     @Override
     public void handleException(Exception e) throws Exception {
         if (retryCount.get() >= maxRetries) {
-            logFailure();
+            log(() -> String.format("Exceeded Max Retries: %s", maxRetries));
             throw e;
         }
 
-        logSuccess();
-    }
-
-    private void logFailure() {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Exceeded Max Retries of ", maxRetries);
-        }
-    }
-
-    private void logSuccess() {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Current retry count'{}' is within max retries limit '{}'", retryCount.get(), maxRetries);
-        }
+        log(() -> String.format("Retry Count: %s/%s", retryCount.get() + 1, maxRetries));
     }
 }

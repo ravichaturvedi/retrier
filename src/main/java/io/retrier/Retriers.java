@@ -49,7 +49,7 @@ public class Retriers {
         };
     }
 
-    public static Option withLogger(Logger logger) {
+    public static Option withTrace(Logger logger) {
         return c -> c.logger = logger;
     }
 }
