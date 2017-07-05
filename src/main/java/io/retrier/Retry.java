@@ -21,7 +21,17 @@ import io.retrier.handler.exception.ExceptionHandler;
 import io.retrier.handler.exception.ExceptionRunnerExceptionHandler;
 import io.retrier.handler.exception.ExceptionsExceptionHandler;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
+import static io.retrier.Retriers.*;
+
 public class Retry {
+
+    private static final Retrier RETRIER = create(
+            withRetryCount(3),
+            withExpBackoff(Duration.of(1, ChronoUnit.SECONDS)),
+            withTimeout(Duration.of(15, ChronoUnit.SECONDS)));
 
     public static ExceptionHandler on(ExceptionHandler... handlers) {
         return new CompositeExceptionHandler(handlers);
@@ -43,5 +53,21 @@ public class Retry {
 
     public static ExceptionHandler onNested(Class<? extends Exception> exceptionClass, Runner runner) {
         return new ExceptionRunnerExceptionHandler(true, exceptionClass, runner);
+    }
+
+    public static <T> T retry(ExceptionHandler handler, Caller<T> caller) throws Exception {
+        return RETRIER.retry(handler, caller);
+    }
+
+    public static void retry(ExceptionHandler handler, Runner runner) throws Exception {
+        RETRIER.retry(handler, runner);
+    }
+
+    public static <T> T retry(Caller<T> caller) throws Exception {
+        return RETRIER.retry(caller);
+    }
+
+    public static void retry(Runner runner) throws Exception {
+        RETRIER.retry(runner);
     }
 }
