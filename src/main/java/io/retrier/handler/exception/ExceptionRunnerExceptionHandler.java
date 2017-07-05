@@ -15,7 +15,7 @@
  */
 package io.retrier.handler.exception;
 
-import io.retrier.Exceptions;
+import io.retrier.utils.Exceptions;
 import io.retrier.Runner;
 import io.retrier.handler.AbstractTraceable;
 import io.retrier.handler.Handler;

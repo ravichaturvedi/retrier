@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.retrier;
+package io.retrier.utils;
 
+
+import io.retrier.Caller;
+import io.retrier.Runner;
 
 import java.util.ArrayList;
 import java.util.List;
