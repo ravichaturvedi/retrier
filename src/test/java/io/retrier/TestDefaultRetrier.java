@@ -42,7 +42,7 @@ public class TestDefaultRetrier {
         AtomicInteger count = new AtomicInteger(0);
 
         try {
-            retrier.retry(on(Exception.class), () -> {
+            retrier.retry(() -> {
                 count.incrementAndGet();
                 System.out.println("Hello");
                 throw new IllegalArgumentException("123");
