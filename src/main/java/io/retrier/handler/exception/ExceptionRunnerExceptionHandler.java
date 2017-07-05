@@ -16,14 +16,14 @@
 package io.retrier.handler.exception;
 
 import io.retrier.Runner;
-import io.retrier.handler.AbstractLoggable;
+import io.retrier.handler.AbstractTraceable;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
 
 /**
  * {@link ExceptionRunnerExceptionHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
  */
-public class ExceptionRunnerExceptionHandler extends AbstractLoggable implements ExceptionHandler {
+public class ExceptionRunnerExceptionHandler extends AbstractTraceable implements ExceptionHandler {
 
     private final Class<? extends Exception> exceptionClass;
     private final Runner runner;
@@ -39,12 +39,12 @@ public class ExceptionRunnerExceptionHandler extends AbstractLoggable implements
     public void handleException(Exception e) throws Exception {
         // If not able to handle the exception then raise it.
         if (!this.exceptionClass.isAssignableFrom(e.getClass())) {
-            log(() -> String.format("Unknown Exception: %s", e));
+            trace(() -> String.format("Unknown Exception: %s", e));
             throw e;
         }
 
         // Otherwise run the provided runner.
-        log(() -> String.format("Caught Exception: '%s' by '%s'", e, exceptionClass));
+        trace(() -> String.format("Caught Exception: '%s' by '%s'", e, exceptionClass));
         this.runner.run();
     }
 }

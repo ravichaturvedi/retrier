@@ -18,7 +18,7 @@ package io.retrier.handler;
 import io.retrier.Tracer;
 
 
-public interface Loggable {
+public interface Traceable {
 
     void setTracer(Tracer tracer);
 }

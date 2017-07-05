@@ -15,7 +15,7 @@
  */
 package io.retrier.handler.limit;
 
-import io.retrier.handler.AbstractLoggable;
+import io.retrier.handler.AbstractTraceable;
 import io.retrier.utils.Preconditions;
 
 import java.time.Duration;
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * {@link TimeoutLimitHandler} is a {@link LimitHandler} implementation to make sure retry is happening within the max timeout provided.
  */
-public class TimeoutLimitHandler extends AbstractLoggable implements LimitHandler {
+public class TimeoutLimitHandler extends AbstractTraceable implements LimitHandler {
 
     private final long timeoutInMillisec;
     private final AtomicLong startTimeInMillisec;
@@ -45,10 +45,10 @@ public class TimeoutLimitHandler extends AbstractLoggable implements LimitHandle
     public void handleException(Exception e) throws Exception {
         long elapsedTimeInMillisec = System.currentTimeMillis() - startTimeInMillisec.get();
         if (elapsedTimeInMillisec > timeoutInMillisec) {
-            log(() -> String.format("Exceeded Timeout of %s", Duration.ofMillis(timeoutInMillisec)));
+            trace(() -> String.format("Exceeded Timeout of %s", Duration.ofMillis(timeoutInMillisec)));
             throw e;
         }
 
-        log(() -> String.format("Remaining time: %s", Duration.ofMillis(timeoutInMillisec - elapsedTimeInMillisec)));
+        trace(() -> String.format("Remaining time: %s", Duration.ofMillis(timeoutInMillisec - elapsedTimeInMillisec)));
     }
 }

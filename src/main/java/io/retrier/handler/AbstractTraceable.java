@@ -15,14 +15,28 @@
  */
 package io.retrier.handler;
 
-public interface Handler extends Traceable {
 
-    default void handlePreExec() {
+import io.retrier.Tracer;
+
+import java.util.function.Supplier;
+
+public abstract class AbstractTraceable implements Traceable {
+
+    protected volatile Tracer tracer;
+    private final String logPrefix;
+
+    public AbstractTraceable() {
+        this.logPrefix = String.format("%s: ", this.getClass().getName());
     }
 
-    default <T> T handlePostExec(T result) {
-        return result;
+    @Override
+    public void setTracer(Tracer tracer) {
+        this.tracer = tracer;
     }
 
-    void handleException(Exception e) throws Exception;
+    protected void trace(Supplier<String> msgSupplier) {
+        if (this.tracer != null) {
+            this.tracer.trace(logPrefix + msgSupplier.get());
+        }
+    }
 }

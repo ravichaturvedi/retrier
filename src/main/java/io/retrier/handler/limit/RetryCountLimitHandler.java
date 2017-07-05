@@ -16,7 +16,7 @@
 package io.retrier.handler.limit;
 
 
-import io.retrier.handler.AbstractLoggable;
+import io.retrier.handler.AbstractTraceable;
 import io.retrier.utils.Preconditions;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * {@link RetryCountLimitHandler} is a {@link LimitHandler} implementation to make sure retry is happening within the max retries limit.
  */
-public class RetryCountLimitHandler extends AbstractLoggable implements LimitHandler {
+public class RetryCountLimitHandler extends AbstractTraceable implements LimitHandler {
 
     private final int maxRetries;
     private final AtomicInteger retryCount;
@@ -44,10 +44,10 @@ public class RetryCountLimitHandler extends AbstractLoggable implements LimitHan
     @Override
     public void handleException(Exception e) throws Exception {
         if (retryCount.get() >= maxRetries) {
-            log(() -> String.format("Exceeded Max Retries: %s", maxRetries));
+            trace(() -> String.format("Exceeded Max Retries: %s", maxRetries));
             throw e;
         }
 
-        log(() -> String.format("Retry Count: %s/%s", retryCount.get() + 1, maxRetries));
+        trace(() -> String.format("Retry Count: %s/%s", retryCount.get() + 1, maxRetries));
     }
 }

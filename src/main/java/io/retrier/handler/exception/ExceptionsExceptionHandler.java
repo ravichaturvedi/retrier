@@ -16,7 +16,7 @@
 package io.retrier.handler.exception;
 
 
-import io.retrier.handler.AbstractLoggable;
+import io.retrier.handler.AbstractTraceable;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
 
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
  * It is similar to mentioning exceptions in catch block and consuming it.
  * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen again.
  */
-public class ExceptionsExceptionHandler extends AbstractLoggable implements ExceptionHandler {
+public class ExceptionsExceptionHandler extends AbstractTraceable implements ExceptionHandler {
 
     // Exception classes to be handled.
     private final List<Class<? extends Exception>> exceptionClasses;
@@ -50,10 +50,10 @@ public class ExceptionsExceptionHandler extends AbstractLoggable implements Exce
 
         // Raise the incoming exception, if the exception cannot be handled by any of the exception classes provided in constructor.
         if (!classHandlingException.isPresent()) {
-            log(() -> String.format("Unknown Exception: %s", e));
+            trace(() -> String.format("Unknown Exception: %s", e));
             throw e;
         }
 
-        log(() -> String.format("Caught Exception: '%s' by '%s'", e, classHandlingException.get()));
+        trace(() -> String.format("Caught Exception: '%s' by '%s'", e, classHandlingException.get()));
     }
 }

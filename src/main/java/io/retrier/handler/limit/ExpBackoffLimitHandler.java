@@ -15,13 +15,13 @@
  */
 package io.retrier.handler.limit;
 
-import io.retrier.handler.AbstractLoggable;
+import io.retrier.handler.AbstractTraceable;
 import io.retrier.utils.Preconditions;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ExpBackoffLimitHandler extends AbstractLoggable implements LimitHandler {
+public class ExpBackoffLimitHandler extends AbstractTraceable implements LimitHandler {
 
     private final long initialDelayInMillisec;
     private final Long maxDelayInMillisec;
@@ -73,7 +73,7 @@ public class ExpBackoffLimitHandler extends AbstractLoggable implements LimitHan
 
     private void sleep(long durationInMillisec) {
         try {
-            log(() -> String.format("Sleeping for %s", Duration.ofMillis(durationInMillisec)));
+            trace(() -> String.format("Sleeping for %s", Duration.ofMillis(durationInMillisec)));
             Thread.sleep(durationInMillisec);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
