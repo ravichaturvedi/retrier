@@ -3,6 +3,27 @@
 Java library to simplify retries of any function or code block (piece of code wrapped in lambda expression) without 
 changing the execution flow from developer perspective. They can rely on the return value of the function/code block in retry, etc..
 
+## Get Started
+
+```java
+import static io.retrier.Retry.*;
+
+// Retrying on some piece of code which may return value or may throw exception.
+// Result will be of same type as returned by the lambda expression.
+Map<String, String> result = retry(() -> {
+    // some operation which may throw exception
+    return new HashMap<String, String>();
+});
+
+
+// Retrying on some piece of code which doesn't return any value but can throw exception
+retry(() -> {
+    // some operation which may throw exception
+});
+```
+
+* `Retry.retry` is using the default `Retrier` with Retry Count `3`, Exponential Backoff Delay of `1 second` and retry timeout duration of 15 second. 
+
 ## Background
 Generally, we call an external system/service using some RPC mechanism (REST/GRPC/etc..) but we immediately inform about the failure to the client/user.
 But in case if it would have been some transient failure (network issue/connectivity issue/etc..) then we could have retried and get success next time.
