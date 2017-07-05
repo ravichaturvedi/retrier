@@ -25,6 +25,7 @@ The whole idea behind building thins library is to encourage developers to build
 * Retry with exponential backoff with max backoff delay.
 * Retry on any Exception type so if the provided exception type `isAssignableFrom` the thrown exception then retry will happen.
 * Retry but execute some piece of code when specific exception occurs (check is based on `isAssignableFrom`), like populate the data etc.
+* Retry on nested exception wrapped within the other exception (as returned by getCause() method).
 * Retry can have constraint from all the above permutation/combination.
 * Retry returns back the exact same exception as thrown inside the retry block.
 
@@ -120,7 +121,20 @@ long result = retrier.retry(on(Exception.class), () -> {
 });
 ```
 
-6. Retry number of times with timeout and exponential backoff with initial delay.
+6. Retry unlimited number of times with exponential backoff delay and max backoff delay but on nested exception.
+```java
+Retrier retrier = create(withExpBackoff(Duration.of(3, ChronoUnit.SECONDS), Duration.of(9, ChronoUnit.SECONDS)));
+
+// Retring in lambda that doesn't return anything 
+retrier.retry(onNested(IllegalArgumentException.class), () -> foo());
+
+// Retrying on lambda that returns a long. 
+long result = retrier.retry(onNested(IllegalArgumentException.class), () -> {
+    return 2L;
+});
+```
+
+7. Retry number of times with timeout and exponential backoff with initial delay.
 ```java
 Retrier retrier = create(withRetryCount(3), 
                         withTimeout(Duration.of(15, ChronoUnit.SECONDS)),
@@ -133,7 +147,7 @@ retrier.retry(on(Exception.class), () -> foo());
 long result = retrier.retry(on(Exception.class), () -> bar(2L));
 ```
 
-7. Retry number of times with timeout, exponential backoff with initial delay and max backoff delay.
+8. Retry number of times with timeout, exponential backoff with initial delay and max backoff delay.
 ```java
 Retrier retrier = create(withRetryCount(3), 
                         withTimeout(Duration.of(15, ChronoUnit.SECONDS)),
@@ -143,7 +157,7 @@ retrier.retry(on(Exception.class), () -> foo());
 Map<String, String> result = retrier.retry(on(Exception.class), () -> bar(new HashMap<String, String>()));
 ```
 
-8. Retry number of times with timeout, exponential backoff with initial delay, max backoff delay and trace to see how retrier itself is working.
+9. Retry number of times with timeout, exponential backoff with initial delay, max backoff delay and trace to see how retrier itself is working.
 
    Since withTrace accepts any lambda which takes `java.lang.String` as only parameter, so can be hooked with any type of logging infrastructure.
 ```java
@@ -156,7 +170,7 @@ retrier.retry(on(Exception.class), () -> foo());
 Set<String> result = retrier.retry(on(Exception.class), () -> bar(new HashSet<String>()));
 ```
 
-9. Retry number of times with timeout, exponential backoff with initial delay, max backoff delay and trace to see how retrier itself is working.
+10. Retry number of times with timeout, exponential backoff with initial delay, max backoff delay and trace to see how retrier itself is working.
    Also if specific exception occurs then execute some piece of code.
 
    Since withTrace accepts any lambda which takes `java.lang.String` as only parameter, so can be hooked with any type of logging infrastructure.
@@ -166,10 +180,14 @@ Retrier retrier = create(withRetryCount(3),
                         withExpBackoff(Duration.of(3, ChronoUnit.SECONDS), Duration.of(9, ChronoUnit.SECONDS)),
                         withTrace(System.out::println));
                         
-retrier.retry(on(on(Exception.class), on(IllegalArgumentException.class, ()-> {})), () -> {
+retrier.retry(on(IllegalArgumentException.class, ()-> {
+    // Some handling of exception
+}), () -> {
     foo()
 });
-retrier.retry(on(on(Exception.class), on(IllegalArgumentException.class, ()-> {})), () -> {
+retrier.retry(on(IllegalArgumentException.class, ()-> {
+    // Some handling of exception
+}), () -> {
     return bar()
 });
 ```
