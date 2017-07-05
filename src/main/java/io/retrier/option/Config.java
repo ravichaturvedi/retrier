@@ -16,7 +16,7 @@
 package io.retrier.option;
 
 
-import io.retrier.Logger;
+import io.retrier.Tracer;
 
 import java.time.Duration;
 
@@ -25,7 +25,7 @@ public class Config {
     public Duration timeoutDuration;
     public Duration expBackoffDuration;
     public Duration expBackoffMaxDuration;
-    public Logger logger;
+    public Tracer tracer;
 
     /**
      * Returns the copy of the config.
@@ -38,7 +38,7 @@ public class Config {
         config.maxRetries = maxRetries;
         config.timeoutDuration = timeoutDuration;
         config.expBackoffMaxDuration = expBackoffMaxDuration;
-        config.logger = logger;
+        config.tracer = tracer;
         return config;
     }
 
@@ -49,7 +49,7 @@ public class Config {
                 ", timeoutDuration=" + timeoutDuration +
                 ", expBackoffDuration=" + expBackoffDuration +
                 ", expBackoffMaxDuration=" + expBackoffMaxDuration +
-                ", logger=" + logger +
+                ", tracer=" + tracer +
                 '}';
     }
 }

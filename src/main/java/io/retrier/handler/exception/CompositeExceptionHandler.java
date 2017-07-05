@@ -16,7 +16,7 @@
 package io.retrier.handler.exception;
 
 
-import io.retrier.Logger;
+import io.retrier.Tracer;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
 
@@ -35,8 +35,8 @@ public class CompositeExceptionHandler implements ExceptionHandler {
     }
 
     @Override
-    public void setLogger(Logger logger) {
-        handlers.forEach(handler -> handler.setLogger(logger));
+    public void setTracer(Tracer tracer) {
+        handlers.forEach(handler -> handler.setTracer(tracer));
     }
 
     @Override

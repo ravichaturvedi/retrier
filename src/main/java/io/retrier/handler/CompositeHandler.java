@@ -16,7 +16,7 @@
 package io.retrier.handler;
 
 
-import io.retrier.Logger;
+import io.retrier.Tracer;
 import io.retrier.handler.exception.ExceptionHandler;
 import io.retrier.handler.limit.CompositeLimitHandler;
 import io.retrier.handler.limit.ExpBackoffLimitHandler;
@@ -36,7 +36,7 @@ public class CompositeHandler implements Handler {
 
     public CompositeHandler(Config config, ExceptionHandler exceptionHandler) {
         this.handlers = createHandlers(config, exceptionHandler);
-        setLogger(config.logger);
+        setTracer(config.tracer);
     }
 
     private List<Handler> createHandlers(Config config, ExceptionHandler exceptionHandler) {
@@ -68,9 +68,9 @@ public class CompositeHandler implements Handler {
     }
 
     @Override
-    public void setLogger(Logger logger) {
-        if (logger == null) return;
-        handlers.forEach(handler -> handler.setLogger(logger));
+    public void setTracer(Tracer tracer) {
+        if (tracer == null) return;
+        handlers.forEach(handler -> handler.setTracer(tracer));
     }
 
     @Override

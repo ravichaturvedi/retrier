@@ -15,10 +15,10 @@
  */
 package io.retrier.handler;
 
-import io.retrier.Logger;
+import io.retrier.Tracer;
 
 
 public interface Loggable {
 
-    void setLogger(Logger logger);
+    void setTracer(Tracer tracer);
 }

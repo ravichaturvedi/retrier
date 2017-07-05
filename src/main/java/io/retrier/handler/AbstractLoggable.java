@@ -1,13 +1,13 @@
 package io.retrier.handler;
 
 
-import io.retrier.Logger;
+import io.retrier.Tracer;
 
 import java.util.function.Supplier;
 
 public abstract class AbstractLoggable implements Loggable {
 
-    protected volatile Logger logger;
+    protected volatile Tracer tracer;
     private final String logPrefix;
 
     public AbstractLoggable() {
@@ -15,13 +15,13 @@ public abstract class AbstractLoggable implements Loggable {
     }
 
     @Override
-    public void setLogger(Logger logger) {
-        this.logger = logger;
+    public void setTracer(Tracer tracer) {
+        this.tracer = tracer;
     }
 
     protected void log(Supplier<String> msgSupplier) {
-        if (this.logger != null) {
-            this.logger.log(logPrefix + msgSupplier.get());
+        if (this.tracer != null) {
+            this.tracer.trace(logPrefix + msgSupplier.get());
         }
     }
 }

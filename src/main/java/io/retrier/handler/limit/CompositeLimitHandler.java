@@ -16,7 +16,7 @@
 package io.retrier.handler.limit;
 
 
-import io.retrier.Logger;
+import io.retrier.Tracer;
 import io.retrier.handler.Handler;
 import io.retrier.utils.Preconditions;
 
@@ -36,8 +36,8 @@ public class CompositeLimitHandler implements LimitHandler {
     }
 
     @Override
-    public void setLogger(Logger logger) {
-        handlers.forEach(handler -> handler.setLogger(logger));
+    public void setTracer(Tracer tracer) {
+        handlers.forEach(handler -> handler.setTracer(tracer));
     }
 
     @Override
