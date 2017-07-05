@@ -20,9 +20,14 @@ import org.junit.Test;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.retrier.Retriers.*;
 import static io.retrier.Retry.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class TestDefaultRetrier {
 
@@ -30,12 +35,23 @@ public class TestDefaultRetrier {
     public void testRetrier() throws Exception {
         Retrier retrier = create(withRetryCount(3),
                 withTimeout(Duration.of(5, ChronoUnit.SECONDS)),
-                withExpBackoff(Duration.of(4, ChronoUnit.SECONDS), Duration.of(2, ChronoUnit.SECONDS)),
+                withExpBackoff(Duration.of(4, ChronoUnit.SECONDS), Duration.of(3, ChronoUnit.SECONDS)),
                 withTrace(System.out::println));
 
-        retrier.retry(on(Exception.class), () -> {
-            System.out.println("Hello");
-            throw new IllegalArgumentException("123");
-        });
+        AtomicInteger count = new AtomicInteger(0);
+
+        try {
+            retrier.retry(on(Exception.class), () -> {
+                count.incrementAndGet();
+                System.out.println("Hello");
+                throw new IllegalArgumentException("123");
+            });
+            fail("Should have got IllegalArgumentException.");
+        } catch (Exception e) {
+            assertThat(e.getClass(), is(equalTo(IllegalArgumentException.class)));
+            assertThat(e.getMessage(), is("123"));
+        }
+
+        assertThat(count.get(), is(2));
     }
 }
