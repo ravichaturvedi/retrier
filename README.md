@@ -210,3 +210,7 @@ long result = Exceptions.wrap(() -> {
     return 2L;
 })
 ```
+
+
+## Credits
+* This library is inspired by my previous experience in dealing with microservices and handling failures.
