@@ -27,6 +27,7 @@ public class Retry {
         return new CompositeExceptionHandler(handlers);
     }
 
+    @SafeVarargs
     public static ExceptionHandler on(Class<? extends Exception>... exceptionClasses) {
         return new ExceptionsExceptionHandler(exceptionClasses);
     }
