@@ -48,4 +48,17 @@ public class TestExceptionHandler {
 
         assertThat(count.get(), is(3));
     }
+
+    @Test
+    public void testDefaultRetry() {
+        try {
+            retry(() -> {
+                throw new IllegalStateException("123");
+            });
+        } catch (IllegalStateException e) {
+            assertThat(e.getMessage(), is("123"));
+        } catch (Exception e) {
+            fail("Should have got IllegalStateException.");
+        }
+    }
 }
