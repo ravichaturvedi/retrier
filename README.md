@@ -3,7 +3,7 @@
 Java library to simplify retries of any function or code block (piece of code wrapped in lambda expression) without 
 changing the execution flow from developer perspective. They can rely on the return value of the function/code block in retry, etc..
 
-## Get Started
+## Getting Started
 
 ```java
 import static io.retrier.Retry.*;

@@ -16,6 +16,7 @@
 package io.retrier;
 
 import io.retrier.handler.exception.ExceptionHandler;
+import io.retrier.utils.Callers;
 
 import static io.retrier.Retry.on;
 
@@ -40,7 +41,9 @@ public interface Retrier {
      * @param runner
      * @throws Exception
      */
-    void retry(ExceptionHandler handler, Runner runner) throws Exception;
+    default void retry(ExceptionHandler handler, Runner runner) throws Exception {
+        retry(handler, Callers.from(runner));
+    }
 
     /**
      * Retry the caller on all exceptions.
@@ -49,8 +52,15 @@ public interface Retrier {
      * @return
      * @throws Exception
      */
-    default <T> T retry(Caller<T> caller) throws Exception {
-        return retry(ON_ALL_EXCEPTION, caller);
+    default <T> T retry(Caller<T> caller, ExceptionHandler... handlers) throws Exception {
+        switch (handlers.length) {
+            case 0:
+                return retry(ON_ALL_EXCEPTION, caller);
+            case 1:
+                return retry(handlers[0], caller);
+            default:
+                return retry(on(handlers), caller);
+        }
     }
 
     /**
@@ -58,7 +68,7 @@ public interface Retrier {
      * @param runner
      * @throws Exception
      */
-    default void retry(Runner runner) throws Exception {
-        retry(ON_ALL_EXCEPTION, runner);
+    default void retry(Runner runner, ExceptionHandler... handlers) throws Exception {
+        retry(Callers.from(runner), handlers);
     }
 }

@@ -63,11 +63,11 @@ public class Retry {
         RETRIER.retry(handler, runner);
     }
 
-    public static <T> T retry(Caller<T> caller) throws Exception {
-        return RETRIER.retry(caller);
+    public static <T> T retry(Caller<T> caller, ExceptionHandler... handlers) throws Exception {
+        return RETRIER.retry(caller, handlers);
     }
 
-    public static void retry(Runner runner) throws Exception {
-        RETRIER.retry(runner);
+    public static void retry(Runner runner, ExceptionHandler... handlers) throws Exception {
+        RETRIER.retry(runner, handlers);
     }
 }

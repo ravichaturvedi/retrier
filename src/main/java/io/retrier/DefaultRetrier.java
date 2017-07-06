@@ -45,12 +45,4 @@ class DefaultRetrier implements Retrier {
             }
         }
     }
-
-    @Override
-    public void retry(ExceptionHandler handler, Runner runner) throws Exception {
-        retry(handler, () -> {
-            runner.run();
-            return null;
-        });
-    }
 }

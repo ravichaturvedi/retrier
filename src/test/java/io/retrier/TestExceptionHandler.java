@@ -54,7 +54,7 @@ public class TestExceptionHandler {
         try {
             retry(() -> {
                 throw new IllegalStateException("123");
-            });
+            }, on(IllegalStateException.class));
         } catch (IllegalStateException e) {
             assertThat(e.getMessage(), is("123"));
         } catch (Exception e) {
