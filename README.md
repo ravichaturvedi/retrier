@@ -201,16 +201,17 @@ Retrier retrier = create(withRetryCount(3),
                         withExpBackoff(Duration.of(3, ChronoUnit.SECONDS), Duration.of(9, ChronoUnit.SECONDS)),
                         withTrace(System.out::println));
                         
-retrier.retry(on(IllegalArgumentException.class, ()-> {
-    // Some handling of exception
-}), () -> {
-    foo()
-});
-retrier.retry(on(IllegalArgumentException.class, ()-> {
-    // Some handling of exception
-}), () -> {
-    return bar()
-});
+retrier.retry(() -> {
+    foo();
+}, on(IllegalStateException.class), on(IllegalArgumentException.class, ()-> {
+       // Some handling of exception
+}));
+
+retrier.retry(() -> {
+    return bar();
+}, on(IllegalStateException.class), on(IllegalArgumentException.class, ()-> {
+       // Some handling of exception
+}));
 ```
 
 ## Utility Classes
