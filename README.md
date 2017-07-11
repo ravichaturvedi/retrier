@@ -81,6 +81,7 @@ void foo() throws Exception;
 ```
 
 1. Retry number of times
+
 ```java
 Retrier retrier = create(withRetryCount(3));
 
@@ -92,6 +93,7 @@ int result = retrier.retry(on(Exception.class), () -> bar(2));
 ```
 
 2. Retry number of times until timeout expires
+
 ```java
 Retrier retrier = create(withRetryCount(3), 
                         withTimeout(Duration.of(15, ChronoUnit.SECONDS)));
@@ -104,6 +106,7 @@ Object result = retrier.retry(on(Exception.class), () -> bar(new Object()));
 ```
 
 3. Retry unlimited number of times until timeout expires.
+
 ```java
 Retrier retrier = create(withTimeout(Duration.of(15, ChronoUnit.SECONDS)));
 
@@ -117,6 +120,7 @@ Map<String, String> result = retrier.retry(on(Exception.class), () -> {
 ```
 
 4. Retry unlimited number of times with exponential backoff delay.
+
 ```java
 Retrier retrier = create(withExpBackoff(Duration.of(3, ChronoUnit.SECONDS))));
 
@@ -130,6 +134,7 @@ long result = retrier.retry(on(Exception.class), () -> {
 ```
 
 5. Retry unlimited number of times with exponential backoff delay and max backoff delay.
+
 ```java
 Retrier retrier = create(withExpBackoff(Duration.of(3, ChronoUnit.SECONDS), Duration.of(9, ChronoUnit.SECONDS)));
 
@@ -143,6 +148,7 @@ long result = retrier.retry(on(Exception.class), () -> {
 ```
 
 6. Retry unlimited number of times with exponential backoff delay and max backoff delay but on nested exception.
+
 ```java
 Retrier retrier = create(withExpBackoff(Duration.of(3, ChronoUnit.SECONDS), Duration.of(9, ChronoUnit.SECONDS)));
 
@@ -156,6 +162,7 @@ long result = retrier.retry(onNested(IllegalArgumentException.class), () -> {
 ```
 
 7. Retry number of times with timeout and exponential backoff with initial delay.
+
 ```java
 Retrier retrier = create(withRetryCount(3), 
                         withTimeout(Duration.of(15, ChronoUnit.SECONDS)),
@@ -169,6 +176,7 @@ long result = retrier.retry(on(Exception.class), () -> bar(2L));
 ```
 
 8. Retry number of times with timeout, exponential backoff with initial delay and max backoff delay.
+
 ```java
 Retrier retrier = create(withRetryCount(3), 
                         withTimeout(Duration.of(15, ChronoUnit.SECONDS)),
@@ -181,6 +189,7 @@ Map<String, String> result = retrier.retry(on(Exception.class), () -> bar(new Ha
 9. Retry number of times with timeout, exponential backoff with initial delay, max backoff delay and trace to see how retrier itself is working.
 
    Since withTrace accepts any lambda which takes `java.lang.String` as only parameter, so can be hooked with any type of logging infrastructure.
+
 ```java
 Retrier retrier = create(withRetryCount(3), 
                         withTimeout(Duration.of(15, ChronoUnit.SECONDS)),
@@ -195,6 +204,7 @@ Set<String> result = retrier.retry(on(Exception.class), () -> bar(new HashSet<St
    Also if specific exception occurs then execute some piece of code.
 
    Since withTrace accepts any lambda which takes `java.lang.String` as only parameter, so can be hooked with any type of logging infrastructure.
+
 ```java
 Retrier retrier = create(withRetryCount(3), 
                         withTimeout(Duration.of(15, ChronoUnit.SECONDS)),
