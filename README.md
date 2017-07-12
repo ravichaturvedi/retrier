@@ -5,6 +5,16 @@ changing the execution flow from developer perspective. They can rely on the ret
 
 ## Getting Started
 
+Add the following `maven` dependency to your project `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.github.ravichaturvedi.retrier</groupId>
+    <artifactId>retrier</artifactId>
+    <version>0.1</version>
+</dependency>
+```
+
 ```java
 import static io.github.ravichaturvedi.retrier.Retry.*;
 
