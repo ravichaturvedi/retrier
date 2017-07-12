@@ -6,7 +6,7 @@ changing the execution flow from developer perspective. They can rely on the ret
 ## Getting Started
 
 ```java
-import static io.retrier.Retry.*;
+import static io.github.ravichaturvedi.retrier.Retry.*;
 
 // Retrying on some piece of code which may return value or may throw exception.
 // Result will be of same type as returned by the lambda expression.
@@ -73,8 +73,8 @@ Specifying below some typical retry use cases covered by the Retrier.
 Assuming there are methods named `foo` and `bar` that throws `Exception` and following imports are in place:
 
 ```java
-import static io.retrier.Retriers.*;
-import static io.retrier.Retry.*;
+import static io.github.ravichaturvedi.retrier.Retriers.*;
+import static io.github.ravichaturvedi.retrier.Retry.*;
 
 void foo() throws Exception;
 <T> T bar(T) throws Exception;
