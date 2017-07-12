@@ -113,4 +113,10 @@
         </repository>
     </distributionManagement>
 
+    <developers>
+        <developer>
+            <name>Ravi Chaturvedi</name>
+            <email>ravichaturvedi1@gmail.com</email>
+        </developer>
+    </developers>
 </project>
