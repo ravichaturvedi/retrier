@@ -27,9 +27,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/ravichaturvedi/retrier</url>
-        <connection>scm:git:https://github.com/ravichaturvedi/retrier.git</connection>
-        <developerConnection>scm:git:git@github.com/ravichaturvedi/retrier.git</developerConnection>
+        <connection>scm:git:git://github.com/ravichaturvedi/retrier</connection>
+        <developerConnection>scm:git:ssh://github.com/ravichaturvedi/retrier.git</developerConnection>
+        <url>https://github.com/ravichaturvedi/retrier/tree/master</url>
     </scm>
 
     <dependencies>
