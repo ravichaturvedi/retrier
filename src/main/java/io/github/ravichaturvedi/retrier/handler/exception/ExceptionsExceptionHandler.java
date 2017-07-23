@@ -16,16 +16,17 @@
 package io.github.ravichaturvedi.retrier.handler.exception;
 
 
-import io.github.ravichaturvedi.retrier.utils.Exceptions;
+import io.github.ravichaturvedi.retrier.helper.Exceptions;
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
 import io.github.ravichaturvedi.retrier.handler.Handler;
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
 /**
  * {@link ExceptionsExceptionHandler} is a {@link Handler} implementation to catch the provided exceptions while retrying.
@@ -40,7 +41,7 @@ public class ExceptionsExceptionHandler extends AbstractTraceable implements Exc
     private final boolean nested;
 
     public ExceptionsExceptionHandler(boolean nested, Class<? extends Exception>... exceptionClasses) {
-        Stream.of(exceptionClasses).forEach(cls -> Preconditions.ensureNotNull(cls, "Exception class cannot be null."));
+        Stream.of(exceptionClasses).forEach(cls -> ensureNotNull(cls, "Exception class cannot be null."));
         this.exceptionClasses = Collections.unmodifiableList(Arrays.asList(exceptionClasses));
         this.nested = nested;
     }

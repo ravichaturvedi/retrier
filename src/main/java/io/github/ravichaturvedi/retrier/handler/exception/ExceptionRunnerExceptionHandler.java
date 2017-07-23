@@ -18,11 +18,12 @@ package io.github.ravichaturvedi.retrier.handler.exception;
 import io.github.ravichaturvedi.retrier.Runner;
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
 import io.github.ravichaturvedi.retrier.handler.Handler;
-import io.github.ravichaturvedi.retrier.utils.Exceptions;
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
+import io.github.ravichaturvedi.retrier.helper.Exceptions;
 
 import java.util.Collections;
 import java.util.List;
+
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
 /**
  * {@link ExceptionRunnerExceptionHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
@@ -34,8 +35,8 @@ public class ExceptionRunnerExceptionHandler extends AbstractTraceable implement
     private final boolean nested;
 
     public ExceptionRunnerExceptionHandler(boolean nested, Class<? extends Exception> exceptionClass, Runner runner) {
-        Preconditions.ensureNotNull(exceptionClass, "Exception class cannot be null.");
-        Preconditions.ensureNotNull(runner, "Runner cannot be null.");
+        ensureNotNull(exceptionClass, "Exception class cannot be null.");
+        ensureNotNull(runner, "Runner cannot be null.");
         this.exceptionClass = exceptionClass;
         this.runner = runner;
         this.nested = nested;

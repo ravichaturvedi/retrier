@@ -16,7 +16,6 @@
 package io.github.ravichaturvedi.retrier;
 
 import io.github.ravichaturvedi.retrier.handler.exception.ExceptionHandler;
-import io.github.ravichaturvedi.retrier.utils.Callers;
 
 import static io.github.ravichaturvedi.retrier.Retry.on;
 
@@ -42,7 +41,7 @@ public interface Retrier {
      * @throws Exception
      */
     default void retry(ExceptionHandler handler, Runner runner) throws Exception {
-        retry(handler, Callers.from(runner));
+        retry(handler, from(runner));
     }
 
     /**
@@ -69,6 +68,18 @@ public interface Retrier {
      * @throws Exception
      */
     default void retry(Runner runner, ExceptionHandler... handlers) throws Exception {
-        retry(Callers.from(runner), handlers);
+        retry(from(runner), handlers);
+    }
+
+    /**
+     * Return a caller that returns null from the provided runner.
+     * @param runner
+     * @return
+     */
+    static Caller<?> from(Runner runner) {
+        return () -> {
+            runner.run();
+            return null;
+        };
     }
 }

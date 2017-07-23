@@ -16,10 +16,11 @@
 package io.github.ravichaturvedi.retrier.handler.limit;
 
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
 
 public class ExpBackoffLimitHandler extends AbstractTraceable implements LimitHandler {
 
@@ -28,9 +29,9 @@ public class ExpBackoffLimitHandler extends AbstractTraceable implements LimitHa
     private final AtomicInteger retryCount;
 
     public ExpBackoffLimitHandler(long initialDelayInMillisec, Long maxDelayInMillisec) {
-        Preconditions.ensure(initialDelayInMillisec > 0, "Initial delay should be positive.");
+        ensure(initialDelayInMillisec > 0, "Initial delay should be positive.");
         if (maxDelayInMillisec != null) {
-            Preconditions.ensure(maxDelayInMillisec > 0, "Max delay should be positive.");
+            ensure(maxDelayInMillisec > 0, "Max delay should be positive.");
         }
 
         this.initialDelayInMillisec = initialDelayInMillisec;

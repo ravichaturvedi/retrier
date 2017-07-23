@@ -19,7 +19,8 @@ import io.github.ravichaturvedi.retrier.handler.exception.ExceptionHandler;
 import io.github.ravichaturvedi.retrier.handler.CompositeHandler;
 import io.github.ravichaturvedi.retrier.handler.Handler;
 import io.github.ravichaturvedi.retrier.option.Config;
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
+
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
 
 class DefaultRetrier implements Retrier {
@@ -27,7 +28,7 @@ class DefaultRetrier implements Retrier {
     private final Config config;
 
     DefaultRetrier(Config config) {
-        Preconditions.ensureNotNull(config, "Config cannot be null.");
+        ensureNotNull(config, "Config cannot be null.");
         this.config = config;
     }
 

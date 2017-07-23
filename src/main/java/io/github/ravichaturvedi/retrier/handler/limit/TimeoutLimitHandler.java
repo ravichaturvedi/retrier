@@ -16,11 +16,11 @@
 package io.github.ravichaturvedi.retrier.handler.limit;
 
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
 
 /**
  * {@link TimeoutLimitHandler} is a {@link LimitHandler} implementation to make sure retry is happening within the max timeout provided.
@@ -31,7 +31,7 @@ public class TimeoutLimitHandler extends AbstractTraceable implements LimitHandl
     private final AtomicLong startTimeInMillisec;
 
     public TimeoutLimitHandler(long timeoutInMillisec) {
-        Preconditions.ensure(timeoutInMillisec > 0, "Timeout should be positive.");
+        ensure(timeoutInMillisec > 0, "Timeout should be positive.");
         this.timeoutInMillisec = timeoutInMillisec;
         this.startTimeInMillisec = new AtomicLong(0);
     }

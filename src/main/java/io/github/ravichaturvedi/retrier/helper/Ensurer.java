@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.ravichaturvedi.retrier.utils;
+package io.github.ravichaturvedi.retrier.helper;
 
 
-public class Preconditions {
+public class Ensurer {
 
     public static void ensureNotNull(Object o, String msg) {
         ensure(o != null, msg);

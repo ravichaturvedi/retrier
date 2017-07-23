@@ -15,8 +15,6 @@
  */
 package io.github.ravichaturvedi.retrier.handler.limit;
 
-
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
 import io.github.ravichaturvedi.retrier.Tracer;
 import io.github.ravichaturvedi.retrier.handler.Handler;
 
@@ -25,13 +23,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
 public class CompositeLimitHandler implements LimitHandler {
 
     private final List<LimitHandler> handlers;
 
     public CompositeLimitHandler(LimitHandler... limitHandlers) {
-        Stream.of(limitHandlers).forEach(handler -> Preconditions.ensureNotNull(handler, "LimitHandler cannot be null."));
+        Stream.of(limitHandlers).forEach(handler -> ensureNotNull(handler, "LimitHandler cannot be null."));
         this.handlers = Collections.unmodifiableList(Arrays.asList(limitHandlers));
     }
 

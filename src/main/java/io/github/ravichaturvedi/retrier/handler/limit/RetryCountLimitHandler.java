@@ -17,9 +17,10 @@ package io.github.ravichaturvedi.retrier.handler.limit;
 
 
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
 
 
 /**
@@ -31,7 +32,7 @@ public class RetryCountLimitHandler extends AbstractTraceable implements LimitHa
     private final AtomicInteger retryCount;
 
     public RetryCountLimitHandler(int maxRetries) {
-        Preconditions.ensure(maxRetries > 0, "Max retry count should be positive.");
+        ensure(maxRetries > 0, "Max retry count should be positive.");
         this.maxRetries = maxRetries;
         this.retryCount = new AtomicInteger();
     }

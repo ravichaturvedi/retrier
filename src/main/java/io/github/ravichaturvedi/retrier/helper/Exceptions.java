@@ -13,50 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.ravichaturvedi.retrier.utils;
+package io.github.ravichaturvedi.retrier.helper;
 
-
-import io.github.ravichaturvedi.retrier.Caller;
-import io.github.ravichaturvedi.retrier.Runner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Exceptions {
-
-    /**
-     * Wrap the exception thrown by the provided runner into the runtime exception
-     * or keep the same runtime exception if thrown.
-     *
-     * @param runner
-     */
-    public static void wrap(Runner runner) {
-        try {
-            runner.run();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Wrap the exception thrown by the provided caller into the runtime exception
-     * or keep the same runtime exception if thrown.
-     *
-     * @param caller
-     * @param <V>
-     * @return
-     */
-    public static <V> V wrap(Caller<V> caller) {
-        try {
-            return caller.call();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Returns the classes of all nested exception classes along with provided exception class,

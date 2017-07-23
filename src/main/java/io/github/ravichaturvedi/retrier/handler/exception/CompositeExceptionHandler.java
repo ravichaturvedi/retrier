@@ -18,19 +18,20 @@ package io.github.ravichaturvedi.retrier.handler.exception;
 
 import io.github.ravichaturvedi.retrier.Tracer;
 import io.github.ravichaturvedi.retrier.handler.Handler;
-import io.github.ravichaturvedi.retrier.utils.Preconditions;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
+
 public class CompositeExceptionHandler implements ExceptionHandler {
 
     private final List<ExceptionHandler> handlers;
 
     public CompositeExceptionHandler(ExceptionHandler... exceptionHandlers) {
-        Stream.of(exceptionHandlers).forEach(handler -> Preconditions.ensureNotNull(handler, "ExceptionHandler cannot be null."));
+        Stream.of(exceptionHandlers).forEach(handler -> ensureNotNull(handler, "ExceptionHandler cannot be null."));
         this.handlers = Collections.unmodifiableList(Arrays.asList(exceptionHandlers));
     }
 
