@@ -234,25 +234,6 @@ retrier.retry(() -> {
 }));
 ```
 
-## Utility Classes
-
-`Exceptions` provides static method to `wrap` the exception thrown by the provided lambda expression into the runtime exception 
-or keep the same runtime exception of thrown. This way it helps to convert a method which throws an exception to a non exception throwing method.
-
-```java
-Exceptions.wrap(() -> {
-    throw new Exception()
-})
-```
-
-```java
-long result = Exceptions.wrap(() -> {
-    // if some contition
-    throw new Exception("bla bla")
-    return 2L;
-})
-```
-
 
 ## Credits
 * This library is inspired by my previous experience in dealing with microservices and handling failures.
