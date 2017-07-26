@@ -13,16 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.ravichaturvedi.retrier.handler;
+package io.github.ravichaturvedi.retrier;
 
+import io.github.ravichaturvedi.retrier.handler.Traceable;
+
+
+/**
+ * {@link Handler} defines the semantics of the callbacks to be invoked during the {@link Retrier} execution.
+ */
 public interface Handler extends Traceable {
 
+    /**
+     * Handle the pre-execution of the retry.
+     */
     default void handlePreExec() {
     }
 
+    /**
+     * Handle the post-execution of the retry, in case need to transform the result in some way.
+     * @param result
+     * @param <T>
+     * @return
+     */
     default <T> T handlePostExec(T result) {
         return result;
     }
 
+    /**
+     * Handle the {@link Exception} raised during the retry.
+     * @param e
+     * @throws Exception
+     */
     void handleException(Exception e) throws Exception;
 }

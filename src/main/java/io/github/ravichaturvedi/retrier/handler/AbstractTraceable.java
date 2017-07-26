@@ -20,9 +20,17 @@ import io.github.ravichaturvedi.retrier.Tracer;
 
 import java.util.function.Supplier;
 
+/**
+ * {@link AbstractTraceable} is an abstract implementation of {@link Traceable} so that individual handler need can rely on provided trace method.
+ */
 public abstract class AbstractTraceable implements Traceable {
 
+    /**
+     * Tracer to be used for tracing.
+     */
     protected volatile Tracer tracer;
+
+    // Prefix to be put in while tracking (helping in keeping track of which class is getting traced.)
     private final String logPrefix;
 
     public AbstractTraceable() {

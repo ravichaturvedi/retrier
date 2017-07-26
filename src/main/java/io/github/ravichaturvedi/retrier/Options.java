@@ -15,19 +15,24 @@
  */
 package io.github.ravichaturvedi.retrier;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Caller specify some code block which returns the value or will throw an exception.
- *
- * @param <V> Type of the returned value.
+ * {@link Options} is an {@link Option} which aggregate and process the provided {@link Option}s in order.
  */
-@FunctionalInterface
-public interface Caller<V> {
+class Options implements Option {
 
-    /**
-     * Call may return a value after executing the implementation.
-     *
-     * @throws Exception If underlying implementation throws.
-     */
-    V call() throws Exception;
+    // List of Option to be processed.
+    private final List<Option> opts;
+
+    public Options(Option... opts) {
+        this.opts = Collections.unmodifiableList(Arrays.asList(opts));
+    }
+
+    @Override
+    public void process(Config config) {
+        opts.forEach(opt -> opt.process(config));
+    }
 }

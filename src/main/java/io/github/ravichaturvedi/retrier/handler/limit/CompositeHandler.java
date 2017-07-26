@@ -15,23 +15,27 @@
  */
 package io.github.ravichaturvedi.retrier.handler.limit;
 
+import io.github.ravichaturvedi.retrier.Handler;
 import io.github.ravichaturvedi.retrier.Tracer;
-import io.github.ravichaturvedi.retrier.handler.Handler;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
-public class CompositeLimitHandler implements LimitHandler {
+/**
+ * {@link CompositeHandler} is the {@link Handler} implementation to aggregate the limit Handlers.
+ */
+public class CompositeHandler implements Handler {
 
-    private final List<LimitHandler> handlers;
+    // List of Limit Handlers.
+    private final List<Handler> handlers;
 
-    public CompositeLimitHandler(LimitHandler... limitHandlers) {
-        Stream.of(limitHandlers).forEach(handler -> ensureNotNull(handler, "LimitHandler cannot be null."));
-        this.handlers = Collections.unmodifiableList(Arrays.asList(limitHandlers));
+    public CompositeHandler(Handler... handlers) {
+        Stream.of(handlers).forEach(handler -> ensureNotNull(handler, "Handler cannot be null."));
+        this.handlers = unmodifiableList(asList(handlers));
     }
 
     @Override
@@ -47,8 +51,17 @@ public class CompositeLimitHandler implements LimitHandler {
     @Override
     public void handleException(Exception e) throws Exception {
         // Make sure all the limit checks are successful.
+        // Propagate the exception on the first limit fail.
         for (Handler handler : handlers) {
-            handler.handleException(e);
+            try {
+                handler.handleException(e);
+                continue;
+            } catch (Exception ex) {
+                // Do nothing, as we don't want to propagate the exception thrown by the Handlers.
+            }
+
+            // Propagate the actual Exception.
+            throw e;
         }
     }
 }

@@ -15,68 +15,85 @@
  */
 package io.github.ravichaturvedi.retrier;
 
-import io.github.ravichaturvedi.retrier.handler.exception.ExceptionHandler;
+import java.util.concurrent.Callable;
 
 import static io.github.ravichaturvedi.retrier.Retry.on;
 
+
+/**
+ * {@link Retrier} is the core interface of the `Retrier` library.
+ */
 public interface Retrier {
 
     // Handler dealing with all types of exception as handling `Exception.class`
-    ExceptionHandler ON_ALL_EXCEPTION = on(Exception.class);
+    Handler ON_ALL_EXCEPTION = on(Exception.class);
 
     /**
-     * Retry the caller using the provided exception handler which can be created using `Retry.on` factory methods.
+     * Retry the {@link Callable} with the provided {@link Handler}, which can be created using `Retry.on` factory methods.
      * @param handler
-     * @param caller
+     * @param callable
      * @param <T>
      * @return
      * @throws Exception
      */
-    <T> T retry(ExceptionHandler handler, Caller<T> caller) throws Exception;
+    <T> T retry(Handler handler, Callable<T> callable) throws Exception;
 
     /**
-     * Retry the runner using the provided exception handler which can be created using `Retry.on` factory methods.
+     * Retry the {@link Runner} with the provided {@link Handler}, which can be created using `Retry.on` factory methods.
      * @param handler
      * @param runner
      * @throws Exception
      */
-    default void retry(ExceptionHandler handler, Runner runner) throws Exception {
+    default void retry(Handler handler, Runner runner) throws Exception {
         retry(handler, from(runner));
     }
 
     /**
-     * Retry the caller on all exceptions.
-     * @param caller
+     * Retry the {@link Callable} with the provided {@link Handler}, which can be created using `Retry.on` factory methods.
+     * @param callable
      * @param <T>
      * @return
      * @throws Exception
      */
-    default <T> T retry(Caller<T> caller, ExceptionHandler... handlers) throws Exception {
-        switch (handlers.length) {
-            case 0:
-                return retry(ON_ALL_EXCEPTION, caller);
-            case 1:
-                return retry(handlers[0], caller);
-            default:
-                return retry(on(handlers), caller);
-        }
+    default <T> T retry(Callable<T> callable, Handler handler) throws Exception {
+        return retry(handler, callable);
     }
 
     /**
-     * Retry the runner on all exceptions.
+     * Retry the {@link Runner} with the provided {@link Handler}, which can be created using `Retry.on` factory methods.
      * @param runner
      * @throws Exception
      */
-    default void retry(Runner runner, ExceptionHandler... handlers) throws Exception {
-        retry(from(runner), handlers);
+    default void retry(Runner runner, Handler handler) throws Exception {
+        retry(from(runner), handler);
     }
 
     /**
-     * Return a caller that returns null from the provided runner.
+     * Retry the {@link Callable} on all {@link Exception}s.
+     * @param callable
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    default <T> T retry(Callable<T> callable) throws Exception {
+        return retry(ON_ALL_EXCEPTION, callable);
+    }
+
+    /**
+     * Retry the {@link Runner} on all {@link Exception}s.
+     * @param runner
+     * @throws Exception
+     */
+    default void retry(Runner runner) throws Exception {
+        retry(from(runner));
+    }
+
+    /**
+     * Return a {@link Callable} that returns null from the provided {@link Runner}.
      * @param runner
      * @return
      */
-    static Caller<?> from(Runner runner) {
+    static Callable<?> from(Runner runner) {
         return () -> {
             runner.run();
             return null;

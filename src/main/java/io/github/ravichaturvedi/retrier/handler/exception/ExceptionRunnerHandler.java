@@ -17,24 +17,24 @@ package io.github.ravichaturvedi.retrier.handler.exception;
 
 import io.github.ravichaturvedi.retrier.Runner;
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
-import io.github.ravichaturvedi.retrier.handler.Handler;
-import io.github.ravichaturvedi.retrier.helper.Exceptions;
+import io.github.ravichaturvedi.retrier.Handler;
 
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
+import static io.github.ravichaturvedi.retrier.helper.Exceptions.getNestedExceptionClasses;
 
 /**
- * {@link ExceptionRunnerExceptionHandler} is a {@link Handler} implementation to run the runner when provided exception occurs.
+ * {@link ExceptionRunnerHandler} is a {@link Handler} implementation to run the {@link Runner} when provided exception occurs.
  */
-public class ExceptionRunnerExceptionHandler extends AbstractTraceable implements ExceptionHandler {
+public class ExceptionRunnerHandler extends AbstractTraceable implements Handler {
 
     private final Class<? extends Exception> exceptionClass;
     private final Runner runner;
     private final boolean nested;
 
-    public ExceptionRunnerExceptionHandler(boolean nested, Class<? extends Exception> exceptionClass, Runner runner) {
+    public ExceptionRunnerHandler(boolean nested, Class<? extends Exception> exceptionClass, Runner runner) {
         ensureNotNull(exceptionClass, "Exception class cannot be null.");
         ensureNotNull(runner, "Runner cannot be null.");
         this.exceptionClass = exceptionClass;
@@ -44,7 +44,7 @@ public class ExceptionRunnerExceptionHandler extends AbstractTraceable implement
 
     @Override
     public void handleException(Exception e) throws Exception {
-        List<Class<? extends Exception>> exceptionClasses = nested ? Exceptions.getNestedExceptionClasses(e): Collections.singletonList(e.getClass());
+        List<Class<? extends Exception>> exceptionClasses = nested ? getNestedExceptionClasses(e): singletonList(e.getClass());
 
         // If not able to handle the exception then raise it.
         if (!exceptionClasses.stream().map(this.exceptionClass::isAssignableFrom).findAny().isPresent()) {

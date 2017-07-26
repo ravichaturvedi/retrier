@@ -15,6 +15,7 @@
  */
 package io.github.ravichaturvedi.retrier.handler.limit;
 
+import io.github.ravichaturvedi.retrier.Handler;
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
 
 import java.time.Duration;
@@ -23,14 +24,19 @@ import java.util.concurrent.atomic.AtomicLong;
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
 
 /**
- * {@link TimeoutLimitHandler} is a {@link LimitHandler} implementation to make sure retry is happening within the max timeout provided.
+ * {@link TimeoutHandler} is a {@link Handler} implementation to make sure retry is happening within the max timeout provided.
+ *
+ * Since available time is computed on the calling thread when the Exception occurs so is not `exact`.
  */
-public class TimeoutLimitHandler extends AbstractTraceable implements LimitHandler {
+public class TimeoutHandler extends AbstractTraceable implements Handler {
 
+    // Timeout available for the handler.
     private final long timeoutInMillisec;
+
+    // Keeping track of the start time in millisecond.
     private final AtomicLong startTimeInMillisec;
 
-    public TimeoutLimitHandler(long timeoutInMillisec) {
+    public TimeoutHandler(long timeoutInMillisec) {
         ensure(timeoutInMillisec > 0, "Timeout should be positive.");
         this.timeoutInMillisec = timeoutInMillisec;
         this.startTimeInMillisec = new AtomicLong(0);

@@ -25,7 +25,7 @@ limitations under the License.
     <packaging>jar</packaging>
 
     <name>Retrier</name>
-    <description>Java library to simplify retries</description>
+    <description>Java8 library to simplify retries</description>
     <url>https://github.com/ravichaturvedi/retrier</url>
 
     <issueManagement>

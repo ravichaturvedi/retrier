@@ -15,6 +15,7 @@
  */
 package io.github.ravichaturvedi.retrier.handler.limit;
 
+import io.github.ravichaturvedi.retrier.Handler;
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
 
 import java.time.Duration;
@@ -22,13 +23,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
 
-public class ExpBackoffLimitHandler extends AbstractTraceable implements LimitHandler {
+/**
+ * {@link ExpBackoffHandler} is a {@link Handler} implementation to handle using exponential backoff delay.
+ */
+public class ExpBackoffHandler extends AbstractTraceable implements Handler {
 
+    // Initial delay in milliseconds to backoff
     private final long initialDelayInMillisec;
+
+    // Max delay in milliseconds to backoff
     private final Long maxDelayInMillisec;
+
+    // Keeping track of retry count to compute exponential backoff
     private final AtomicInteger retryCount;
 
-    public ExpBackoffLimitHandler(long initialDelayInMillisec, Long maxDelayInMillisec) {
+    public ExpBackoffHandler(long initialDelayInMillisec, Long maxDelayInMillisec) {
         ensure(initialDelayInMillisec > 0, "Initial delay should be positive.");
         if (maxDelayInMillisec != null) {
             ensure(maxDelayInMillisec > 0, "Max delay should be positive.");
@@ -39,7 +48,7 @@ public class ExpBackoffLimitHandler extends AbstractTraceable implements LimitHa
         this.retryCount = new AtomicInteger(0);
     }
 
-    public ExpBackoffLimitHandler(long initialDelayInMillisec) {
+    public ExpBackoffHandler(long initialDelayInMillisec) {
         this(initialDelayInMillisec, null);
     }
 
@@ -58,7 +67,7 @@ public class ExpBackoffLimitHandler extends AbstractTraceable implements LimitHa
         sleep(delay());
     }
 
-    private void handleWithMaxDelay() {
+    private void handleWithMaxDelay() throws Exception {
         long delay = delay();
         if (delay > maxDelayInMillisec) {
             sleep(maxDelayInMillisec);
@@ -72,12 +81,13 @@ public class ExpBackoffLimitHandler extends AbstractTraceable implements LimitHa
         return initialDelayInMillisec * (long)Math.pow(2, retryCount.get() - 1);
     }
 
-    private void sleep(long durationInMillisec) {
+    private void sleep(long durationInMillisec) throws Exception {
         try {
             trace(() -> String.format("Sleeping for %s", Duration.ofMillis(durationInMillisec)));
             Thread.sleep(durationInMillisec);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            trace(() -> String.format("Sleeping thread interrupted: %s", e.getMessage()));
+            throw e;
         }
     }
 }

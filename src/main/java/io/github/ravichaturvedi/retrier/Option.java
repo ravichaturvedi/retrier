@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.ravichaturvedi.retrier.handler.exception;
-
-import io.github.ravichaturvedi.retrier.handler.Handler;
+package io.github.ravichaturvedi.retrier;
 
 /**
- * {@link ExceptionHandler} defines {@link Handler} which do not keep the state.
+ * {@link Option} define the semantics of {@link Retrier} configuration option.
  */
-public interface ExceptionHandler extends Handler {
+@FunctionalInterface
+public interface Option {
+
+    /**
+     * Applies the option on the provided {@link Config}.
+     * @param config
+     */
+    void process(Config config);
 }
