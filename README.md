@@ -11,9 +11,9 @@ Add the following `maven` dependency to your project `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>io.github.ravichaturvedi.retrier</groupId>
+    <groupId>io.github.ravichaturvedi</groupId>
     <artifactId>retrier</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 
