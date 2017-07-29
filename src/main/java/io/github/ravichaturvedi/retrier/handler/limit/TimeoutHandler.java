@@ -16,7 +16,7 @@
 package io.github.ravichaturvedi.retrier.handler.limit;
 
 import io.github.ravichaturvedi.retrier.Handler;
-import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
+import io.github.ravichaturvedi.retrier.handler.Traceable;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,7 +28,7 @@ import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
  *
  * Since available time is computed on the calling thread when the Exception occurs so is not `exact`.
  */
-public class TimeoutHandler extends AbstractTraceable implements Handler {
+public class TimeoutHandler extends Traceable implements Handler {
 
     // Timeout available for the handler.
     private final long timeoutInMillisec;

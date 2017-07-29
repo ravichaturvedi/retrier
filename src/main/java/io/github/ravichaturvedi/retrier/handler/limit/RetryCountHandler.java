@@ -17,7 +17,7 @@ package io.github.ravichaturvedi.retrier.handler.limit;
 
 
 import io.github.ravichaturvedi.retrier.Handler;
-import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
+import io.github.ravichaturvedi.retrier.handler.Traceable;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,7 +27,7 @@ import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
 /**
  * {@link RetryCountHandler} is a {@link Handler} implementation to make sure retry is happening within the max retries limit.
  */
-public class RetryCountHandler extends AbstractTraceable implements Handler {
+public class RetryCountHandler extends Traceable implements Handler {
 
     // Max number of retrier permitted.
     private final int maxRetries;

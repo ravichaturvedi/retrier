@@ -16,7 +16,7 @@
 package io.github.ravichaturvedi.retrier.handler.limit;
 
 import io.github.ravichaturvedi.retrier.Handler;
-import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
+import io.github.ravichaturvedi.retrier.handler.Traceable;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,7 +26,7 @@ import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensure;
 /**
  * {@link ExpBackoffHandler} is a {@link Handler} implementation to handle using exponential backoff delay.
  */
-public class ExpBackoffHandler extends AbstractTraceable implements Handler {
+public class ExpBackoffHandler extends Traceable implements Handler {
 
     // Initial delay in milliseconds to backoff
     private final long initialDelayInMillisec;

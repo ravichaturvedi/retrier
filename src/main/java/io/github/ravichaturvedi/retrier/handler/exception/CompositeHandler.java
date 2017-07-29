@@ -16,15 +16,14 @@
 package io.github.ravichaturvedi.retrier.handler.exception;
 
 
-import io.github.ravichaturvedi.retrier.Tracer;
 import io.github.ravichaturvedi.retrier.Handler;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Arrays.asList;
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 
 /**
@@ -38,11 +37,6 @@ public class CompositeHandler implements Handler {
     public CompositeHandler(Handler... handlers) {
         Stream.of(handlers).forEach(handler -> ensureNotNull(handler, "Handler cannot be null."));
         this.handlers = unmodifiableList(asList(handlers));
-    }
-
-    @Override
-    public void setTracer(Tracer tracer) {
-        handlers.forEach(handler -> handler.setTracer(tracer));
     }
 
     @Override

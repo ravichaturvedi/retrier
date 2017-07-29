@@ -15,10 +15,29 @@
  */
 package io.github.ravichaturvedi.retrier.handler;
 
-import io.github.ravichaturvedi.retrier.Tracer;
 
+import io.github.ravichaturvedi.retrier.Handler;
+import io.github.ravichaturvedi.retrier.ThreadLocalTracer;
 
-public interface Traceable {
+import java.util.function.Supplier;
 
-    void setTracer(Tracer tracer);
+/**
+ * {@link Traceable} is an abstract class so that individual {@link Handler} can rely on provided trace method.
+ */
+public abstract class Traceable {
+
+    // Prefix to be put in while tracking (helping in keeping track of which class is getting traced.)
+    private final String logPrefix;
+
+    public Traceable() {
+        this.logPrefix = String.format("%s: ", this.getClass().getName());
+    }
+
+    /**
+     * Delegates the trace calls to {@link ThreadLocalTracer}.
+     * @param msgSupplier
+     */
+    protected void trace(Supplier<String> msgSupplier) {
+        ThreadLocalTracer.trace(logPrefix + msgSupplier.get());
+    }
 }

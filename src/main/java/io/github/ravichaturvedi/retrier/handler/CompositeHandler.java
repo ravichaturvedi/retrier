@@ -18,8 +18,9 @@ package io.github.ravichaturvedi.retrier.handler;
 
 import io.github.ravichaturvedi.retrier.Config;
 import io.github.ravichaturvedi.retrier.Handler;
-import io.github.ravichaturvedi.retrier.handler.limit.*;
-import io.github.ravichaturvedi.retrier.Tracer;
+import io.github.ravichaturvedi.retrier.handler.limit.ExpBackoffHandler;
+import io.github.ravichaturvedi.retrier.handler.limit.RetryCountHandler;
+import io.github.ravichaturvedi.retrier.handler.limit.TimeoutHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,6 @@ public class CompositeHandler implements Handler {
 
     public CompositeHandler(Config config, Handler handler) {
         this.handlers = createHandlers(config, handler);
-        setTracer(config.tracer);
     }
 
     /**
@@ -70,12 +70,6 @@ public class CompositeHandler implements Handler {
                 new io.github.ravichaturvedi.retrier.handler.limit.CompositeHandler(beforeHandlers.toArray(new Handler[0])),
                 handler,
                 new io.github.ravichaturvedi.retrier.handler.limit.CompositeHandler(afterHandlers.toArray(new Handler[0])));
-    }
-
-    @Override
-    public void setTracer(Tracer tracer) {
-        if (tracer == null) return;
-        handlers.forEach(handler -> handler.setTracer(tracer));
     }
 
     @Override
