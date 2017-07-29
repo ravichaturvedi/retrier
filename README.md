@@ -225,15 +225,15 @@ Retrier retrier = create(withRetryCount(3),
                         
 retrier.retry(() -> {
     foo();
-}, on(IllegalStateException.class), on(IllegalArgumentException.class, ()-> {
+}, on(on(IllegalStateException.class), on(IllegalArgumentException.class, ()-> {
        // Some handling of exception
-}));
+})));
 
 retrier.retry(() -> {
     return bar();
-}, on(IllegalStateException.class), on(IllegalArgumentException.class, ()-> {
+}, on(on(IllegalStateException.class), on(IllegalArgumentException.class, ()-> {
        // Some handling of exception
-}));
+})));
 ```
 
 
