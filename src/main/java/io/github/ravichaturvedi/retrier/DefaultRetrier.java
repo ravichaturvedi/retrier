@@ -36,6 +36,16 @@ class DefaultRetrier implements Retrier {
 
     @Override
     public <T> T retry(Handler handler, Callable<T> callable) throws Exception {
+        ThreadLocalTracer.setTracer(config.tracer);
+
+        try {
+            return retryInternal(handler, callable);
+        } finally {
+            ThreadLocalTracer.removeTracer();
+        }
+    }
+
+    private <T> T retryInternal(Handler handler, Callable<T> callable) throws Exception {
         Handler h = new CompositeHandler(config, handler);
 
         while (true) {

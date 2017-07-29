@@ -15,13 +15,11 @@
  */
 package io.github.ravichaturvedi.retrier;
 
-import io.github.ravichaturvedi.retrier.handler.Traceable;
-
 
 /**
  * {@link Handler} defines the semantics of the callbacks to be invoked during the {@link Retrier} execution.
  */
-public interface Handler extends Traceable {
+public interface Handler {
 
     /**
      * Handle the pre-execution of the retry.

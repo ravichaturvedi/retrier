@@ -15,20 +15,20 @@
  */
 package io.github.ravichaturvedi.retrier.handler.exception;
 
-import io.github.ravichaturvedi.retrier.Runner;
-import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
 import io.github.ravichaturvedi.retrier.Handler;
+import io.github.ravichaturvedi.retrier.Runner;
+import io.github.ravichaturvedi.retrier.handler.Traceable;
 
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 import static io.github.ravichaturvedi.retrier.helper.Exceptions.getNestedExceptionClasses;
+import static java.util.Collections.singletonList;
 
 /**
  * {@link ExceptionRunnerHandler} is a {@link Handler} implementation to run the {@link Runner} when provided exception occurs.
  */
-public class ExceptionRunnerHandler extends AbstractTraceable implements Handler {
+public class ExceptionRunnerHandler extends Traceable implements Handler {
 
     private final Class<? extends Exception> exceptionClass;
     private final Runner runner;

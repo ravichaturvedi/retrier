@@ -17,17 +17,17 @@ package io.github.ravichaturvedi.retrier.handler.exception;
 
 
 import io.github.ravichaturvedi.retrier.Handler;
-import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
+import io.github.ravichaturvedi.retrier.handler.Traceable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
+import static io.github.ravichaturvedi.retrier.helper.Exceptions.getNestedExceptionClasses;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
-import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
-import static io.github.ravichaturvedi.retrier.helper.Exceptions.getNestedExceptionClasses;
 
 /**
  * {@link ExceptionsHandler} is a {@link Handler} implementation to catch the provided {@link Exception}s while retrying.
@@ -35,7 +35,7 @@ import static io.github.ravichaturvedi.retrier.helper.Exceptions.getNestedExcept
  * It is similar to mentioning exceptions in catch block and consuming it.
  * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen.
  */
-public class ExceptionsHandler extends AbstractTraceable implements Handler {
+public class ExceptionsHandler extends Traceable implements Handler {
 
     // Exception classes to be handled.
     private final List<Class<? extends Exception>> exceptionClasses;

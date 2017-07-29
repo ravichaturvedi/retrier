@@ -16,14 +16,13 @@
 package io.github.ravichaturvedi.retrier.handler.limit;
 
 import io.github.ravichaturvedi.retrier.Handler;
-import io.github.ravichaturvedi.retrier.Tracer;
 
 import java.util.List;
 import java.util.stream.Stream;
 
+import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
-import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
 /**
  * {@link CompositeHandler} is the {@link Handler} implementation to aggregate the limit Handlers.
@@ -36,11 +35,6 @@ public class CompositeHandler implements Handler {
     public CompositeHandler(Handler... handlers) {
         Stream.of(handlers).forEach(handler -> ensureNotNull(handler, "Handler cannot be null."));
         this.handlers = unmodifiableList(asList(handlers));
-    }
-
-    @Override
-    public void setTracer(Tracer tracer) {
-        handlers.forEach(handler -> handler.setTracer(tracer));
     }
 
     @Override
