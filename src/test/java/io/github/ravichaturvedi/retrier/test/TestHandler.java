@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.ravichaturvedi.retrier;
+package io.github.ravichaturvedi.retrier.test;
 
 
+import io.github.ravichaturvedi.retrier.Retrier;
+import io.github.ravichaturvedi.retrier.Retry;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,7 +29,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class TestExceptionHandler {
+public class TestHandler {
 
     @Test
     public void testRetryCount() {

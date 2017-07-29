@@ -16,58 +16,140 @@
 package io.github.ravichaturvedi.retrier;
 
 
-import io.github.ravichaturvedi.retrier.handler.exception.CompositeExceptionHandler;
-import io.github.ravichaturvedi.retrier.handler.exception.ExceptionHandler;
-import io.github.ravichaturvedi.retrier.handler.exception.ExceptionRunnerExceptionHandler;
-import io.github.ravichaturvedi.retrier.handler.exception.ExceptionsExceptionHandler;
+import io.github.ravichaturvedi.retrier.handler.exception.CompositeHandler;
+import io.github.ravichaturvedi.retrier.handler.exception.ExceptionRunnerHandler;
+import io.github.ravichaturvedi.retrier.handler.exception.ExceptionsHandler;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.Callable;
 
 import static io.github.ravichaturvedi.retrier.Retriers.*;
 
+/**
+ * {@link Retry} provides methods for default {@link Retrier} and `on` methods to create {@link Handler}s.
+ */
 public class Retry {
 
+    /**
+     * Default {@link Retrier} with retry count 3, exponential backoff duration of 1 second and timout of 15 seconds.
+     */
     private static final Retrier RETRIER = create(
             withRetryCount(3),
             withExpBackoff(Duration.of(1, ChronoUnit.SECONDS)),
             withTimeout(Duration.of(15, ChronoUnit.SECONDS)));
 
-    public static ExceptionHandler on(ExceptionHandler... handlers) {
-        return new CompositeExceptionHandler(handlers);
+    /**
+     * Retry the  {@link Callable} with the provided {@link Handler}, using the default {@link Retrier}.
+     * @param handler
+     * @param callable
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    public static <T> T retry(Handler handler, Callable<T> callable) throws Exception {
+        return RETRIER.retry(handler, callable);
     }
 
-    @SafeVarargs
-    public static ExceptionHandler on(Class<? extends Exception>... exceptionClasses) {
-        return new ExceptionsExceptionHandler(false, exceptionClasses);
-    }
-
-    public static ExceptionHandler on(Class<? extends Exception> exceptionClass, Runner runner) {
-        return new ExceptionRunnerExceptionHandler(false, exceptionClass, runner);
-    }
-
-    @SafeVarargs
-    public static ExceptionHandler onNested(Class<? extends Exception>... exceptionClasses) {
-        return new ExceptionsExceptionHandler(true, exceptionClasses);
-    }
-
-    public static ExceptionHandler onNested(Class<? extends Exception> exceptionClass, Runner runner) {
-        return new ExceptionRunnerExceptionHandler(true, exceptionClass, runner);
-    }
-
-    public static <T> T retry(ExceptionHandler handler, Caller<T> caller) throws Exception {
-        return RETRIER.retry(handler, caller);
-    }
-
-    public static void retry(ExceptionHandler handler, Runner runner) throws Exception {
+    /**
+     * Retry the {@link Runner} with the provided Handler, using the default {@link Retrier}.
+     * @param handler
+     * @param runner
+     * @throws Exception
+     */
+    public static void retry(Handler handler, Runner runner) throws Exception {
         RETRIER.retry(handler, runner);
     }
 
-    public static <T> T retry(Caller<T> caller, ExceptionHandler... handlers) throws Exception {
-        return RETRIER.retry(caller, handlers);
+    /**
+     * Retry the {@link Callable} with the provided {@link Handler}, using the default {@link Retrier}.
+     * @param callable
+     * @param handler
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    public static <T> T retry(Callable<T> callable, Handler handler) throws Exception {
+        return RETRIER.retry(callable, handler);
     }
 
-    public static void retry(Runner runner, ExceptionHandler... handlers) throws Exception {
-        RETRIER.retry(runner, handlers);
+    /**
+     * Retry the {@link Runner} with the provided {@link Handler}, using the default {@link Retrier}.
+     * @param runner
+     * @param handler
+     * @throws Exception
+     */
+    public static void retry(Runner runner, Handler handler) throws Exception {
+        RETRIER.retry(runner, handler);
+    }
+
+    /**
+     * Retry the {@link Callable} on all {@link Exception}s, using the default {@link Retrier}.
+     * @param callable
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    public static <T> T retry(Callable<T> callable) throws Exception {
+        return RETRIER.retry(callable);
+    }
+
+    /**
+     * Retry the {@link Runner} on all {@link Exception}s, using the default {@link Retrier}.
+     * @param runner
+     * @throws Exception
+     */
+    public static void retry(Runner runner) throws Exception {
+        RETRIER.retry(runner);
+    }
+
+    /**
+     * Create a handler to aggregate and handle using the provided handler.
+     * It is generally used when need to pass multiple handler in first argument of retry method.
+     * @param handlers
+     * @return
+     */
+    public static Handler on(Handler... handlers) {
+        return new CompositeHandler(handlers);
+    }
+
+    /**
+     * Returns a {@link Handler} to handle the provided {@link Exception} classes.
+     * @param exceptionClasses
+     * @return
+     */
+    @SafeVarargs
+    public static Handler on(Class<? extends Exception>... exceptionClasses) {
+        return new ExceptionsHandler(false, exceptionClasses);
+    }
+
+    /**
+     * Returns a {@link Handler} to run the {@link Runner} when provided {@link Exception} occurs.
+     * @param exceptionClass
+     * @param runner
+     * @return
+     */
+    public static Handler on(Class<? extends Exception> exceptionClass, Runner runner) {
+        return new ExceptionRunnerHandler(false, exceptionClass, runner);
+    }
+
+    /**
+     * Returns a {@link Handler} to handle the provided {@link Exception} classes when the thrown or nested exception (provided by getCause()) has that type.
+     * @param exceptionClasses
+     * @return
+     */
+    @SafeVarargs
+    public static Handler onNested(Class<? extends Exception>... exceptionClasses) {
+        return new ExceptionsHandler(true, exceptionClasses);
+    }
+
+    /**
+     * Returns a {@link Handler} to run the {@link Runner} when provided {@link Exception} occurs or its nested {@link Exception} (provided by getCause()) has that type/
+     * @param exceptionClass
+     * @param runner
+     * @return
+     */
+    public static Handler onNested(Class<? extends Exception> exceptionClass, Runner runner) {
+        return new ExceptionRunnerHandler(true, exceptionClass, runner);
     }
 }

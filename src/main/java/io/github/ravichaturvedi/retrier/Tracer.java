@@ -16,8 +16,15 @@
 package io.github.ravichaturvedi.retrier;
 
 
+/**
+ * {@link Tracer} defines the semantics of tracing retry execution.
+ */
 @FunctionalInterface
 public interface Tracer {
 
+    /**
+     * Trace the provided message, can be piped to a user defined output (LOGGER, System.out, etc)
+     * @param msg
+     */
     void trace(String msg);
 }

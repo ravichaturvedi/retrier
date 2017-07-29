@@ -17,15 +17,15 @@ package io.github.ravichaturvedi.retrier;
 
 
 /**
- * Runner specify some code block which returns nothing but can throw exception.
+ * {@link Runner} specifies the semantics of the piece of code which returns nothing but may throw {@link Exception}.
  */
 @FunctionalInterface
 public interface Runner {
 
     /**
-     * Run the implementation
+     * Run some piece of code which returns nothing but can throw exception.
      *
-     * @throws Exception If underlying implementation throws.
+     * @throws Exception
      */
     void run() throws Exception;
 }

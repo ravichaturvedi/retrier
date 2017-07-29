@@ -15,14 +15,16 @@
  */
 package io.github.ravichaturvedi.retrier;
 
-import io.github.ravichaturvedi.retrier.handler.exception.ExceptionHandler;
 import io.github.ravichaturvedi.retrier.handler.CompositeHandler;
-import io.github.ravichaturvedi.retrier.handler.Handler;
-import io.github.ravichaturvedi.retrier.option.Config;
+
+import java.util.concurrent.Callable;
 
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
 
+/**
+ * Default {@link Retrier} implementation, which can only be instantiated using {@link Retriers#create} method.
+ */
 class DefaultRetrier implements Retrier {
 
     private final Config config;
@@ -33,16 +35,16 @@ class DefaultRetrier implements Retrier {
     }
 
     @Override
-    public <T> T retry(ExceptionHandler exceptionHandler, Caller<T> caller) throws Exception {
-        Handler handler = new CompositeHandler(config, exceptionHandler);
+    public <T> T retry(Handler handler, Callable<T> callable) throws Exception {
+        Handler h = new CompositeHandler(config, handler);
 
         while (true) {
             try {
-                handler.handlePreExec();
-                T result = caller.call();
-                return handler.handlePostExec(result);
+                h.handlePreExec();
+                T result = callable.call();
+                return h.handlePostExec(result);
             } catch (Exception e) {
-                handler.handleException(e);
+                h.handleException(e);
             }
         }
     }

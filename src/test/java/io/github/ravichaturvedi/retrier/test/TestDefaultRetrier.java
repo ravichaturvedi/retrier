@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.ravichaturvedi.retrier;
+package io.github.ravichaturvedi.retrier.test;
 
 
+import io.github.ravichaturvedi.retrier.Retrier;
 import org.junit.Test;
 
 import java.time.Duration;

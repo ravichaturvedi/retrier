@@ -17,22 +17,27 @@ package io.github.ravichaturvedi.retrier.handler.exception;
 
 
 import io.github.ravichaturvedi.retrier.Tracer;
-import io.github.ravichaturvedi.retrier.handler.Handler;
+import io.github.ravichaturvedi.retrier.Handler;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Arrays.asList;
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
 
-public class CompositeExceptionHandler implements ExceptionHandler {
 
-    private final List<ExceptionHandler> handlers;
+/**
+ * {@link CompositeHandler} is a {@link Handler} implementation to aggregate the exception Handlers.
+ */
+public class CompositeHandler implements Handler {
 
-    public CompositeExceptionHandler(ExceptionHandler... exceptionHandlers) {
-        Stream.of(exceptionHandlers).forEach(handler -> ensureNotNull(handler, "ExceptionHandler cannot be null."));
-        this.handlers = Collections.unmodifiableList(Arrays.asList(exceptionHandlers));
+    // List of Exception Handlers
+    private final List<Handler> handlers;
+
+    public CompositeHandler(Handler... handlers) {
+        Stream.of(handlers).forEach(handler -> ensureNotNull(handler, "Handler cannot be null."));
+        this.handlers = unmodifiableList(asList(handlers));
     }
 
     @Override
@@ -43,17 +48,17 @@ public class CompositeExceptionHandler implements ExceptionHandler {
     @Override
     public void handleException(Exception e) throws Exception {
         // Try to get the exception handled by all the exception handler and
-        // short-circuit on the first successful handling.
+        // short-circuit on the first successful handling, to provide the same semantics as try-catch-catch blocks.
         for (Handler handler : handlers) {
             try {
                 handler.handleException(e);
                 return;
             } catch (Exception ex) {
-                // Do nothing
+                // Do nothing, as we don't want to propagate the exception thrown by the Handlers.
             }
         }
 
-        // If none of the handler handles the exception then propogate it.
+        // If none of the handler handles the exception then propagate it.
         throw e;
     }
 }

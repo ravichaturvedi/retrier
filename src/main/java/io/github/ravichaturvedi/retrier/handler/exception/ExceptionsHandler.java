@@ -16,39 +16,40 @@
 package io.github.ravichaturvedi.retrier.handler.exception;
 
 
-import io.github.ravichaturvedi.retrier.helper.Exceptions;
+import io.github.ravichaturvedi.retrier.Handler;
 import io.github.ravichaturvedi.retrier.handler.AbstractTraceable;
-import io.github.ravichaturvedi.retrier.handler.Handler;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static io.github.ravichaturvedi.retrier.helper.Ensurer.ensureNotNull;
+import static io.github.ravichaturvedi.retrier.helper.Exceptions.getNestedExceptionClasses;
 
 /**
- * {@link ExceptionsExceptionHandler} is a {@link Handler} implementation to catch the provided exceptions while retrying.
+ * {@link ExceptionsHandler} is a {@link Handler} implementation to catch the provided {@link Exception}s while retrying.
  * <p>
  * It is similar to mentioning exceptions in catch block and consuming it.
- * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen again.
+ * So if the exception raised during retry is subclass of any of the provided exception than it will be consumed and retry will happen.
  */
-public class ExceptionsExceptionHandler extends AbstractTraceable implements ExceptionHandler {
+public class ExceptionsHandler extends AbstractTraceable implements Handler {
 
     // Exception classes to be handled.
     private final List<Class<? extends Exception>> exceptionClasses;
     private final boolean nested;
 
-    public ExceptionsExceptionHandler(boolean nested, Class<? extends Exception>... exceptionClasses) {
+    public ExceptionsHandler(boolean nested, Class<? extends Exception>... exceptionClasses) {
         Stream.of(exceptionClasses).forEach(cls -> ensureNotNull(cls, "Exception class cannot be null."));
-        this.exceptionClasses = Collections.unmodifiableList(Arrays.asList(exceptionClasses));
+        this.exceptionClasses = unmodifiableList(asList(exceptionClasses));
         this.nested = nested;
     }
 
     @Override
     public void handleException(Exception e) throws Exception {
-        List<Class<? extends Exception>> exceptionClasses = nested ? Exceptions.getNestedExceptionClasses(e): Collections.singletonList(e.getClass());
+        List<Class<? extends Exception>> exceptionClasses = nested ? getNestedExceptionClasses(e): singletonList(e.getClass());
         Optional<Class<? extends Exception>> classHandlingException = exceptionClasses.stream()
                 .filter(cls -> exceptionClasses.stream().map(cls::isAssignableFrom).findAny().isPresent())
                 .findAny();

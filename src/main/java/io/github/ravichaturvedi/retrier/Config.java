@@ -13,22 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.ravichaturvedi.retrier.option;
+package io.github.ravichaturvedi.retrier;
 
-
-import io.github.ravichaturvedi.retrier.Tracer;
 
 import java.time.Duration;
 
+/**
+ * {@link Config} defines the various config that can be supplied to the Retrier.
+ */
 public class Config {
+    // Max Number of Retries
     public Integer maxRetries;
+
+    // Timeout Duration
     public Duration timeoutDuration;
+
+    // Exponential Backoff Duration
     public Duration expBackoffDuration;
+
+    // Max Exponential Backoff Duration
     public Duration expBackoffMaxDuration;
+
+    // Tracer to trace the execution
     public Tracer tracer;
 
     /**
-     * Returns the copy of the config.
+     * Returns a new copy of the {@link Config}.
      *
      * @return
      */

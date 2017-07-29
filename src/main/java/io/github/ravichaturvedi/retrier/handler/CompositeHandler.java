@@ -16,55 +16,60 @@
 package io.github.ravichaturvedi.retrier.handler;
 
 
-import io.github.ravichaturvedi.retrier.handler.exception.ExceptionHandler;
-import io.github.ravichaturvedi.retrier.handler.limit.CompositeLimitHandler;
-import io.github.ravichaturvedi.retrier.handler.limit.ExpBackoffLimitHandler;
-import io.github.ravichaturvedi.retrier.handler.limit.LimitHandler;
+import io.github.ravichaturvedi.retrier.Config;
+import io.github.ravichaturvedi.retrier.Handler;
+import io.github.ravichaturvedi.retrier.handler.limit.*;
 import io.github.ravichaturvedi.retrier.Tracer;
-import io.github.ravichaturvedi.retrier.handler.limit.RetryCountLimitHandler;
-import io.github.ravichaturvedi.retrier.handler.limit.TimeoutLimitHandler;
-import io.github.ravichaturvedi.retrier.option.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * {@link CompositeHandler} is a {@link Handler} implementation which chains both Limit and Composite handlers.
+ */
 public class CompositeHandler implements Handler {
 
+    // Chained handlers
     private final List<Handler> handlers;
 
-    public CompositeHandler(Config config, ExceptionHandler exceptionHandler) {
-        this.handlers = createHandlers(config, exceptionHandler);
+    public CompositeHandler(Config config, Handler handler) {
+        this.handlers = createHandlers(config, handler);
         setTracer(config.tracer);
     }
 
-    private List<Handler> createHandlers(Config config, ExceptionHandler exceptionHandler) {
-        List<LimitHandler> beforeHandlers = new ArrayList<>(2);
-        List<LimitHandler> afterHandlers = new ArrayList<>(2);
+    /**
+     * Creates the handler chain from the provided {@link Config} (which creates limit) and exception {@link Handler}
+     * @param config
+     * @param handler
+     * @return
+     */
+    private List<Handler> createHandlers(Config config, Handler handler) {
+        List<Handler> beforeHandlers = new ArrayList<>(2);
+        List<Handler> afterHandlers = new ArrayList<>(2);
 
         if (config.timeoutDuration != null) {
-            LimitHandler timeoutLimitHandler = new TimeoutLimitHandler(config.timeoutDuration.toMillis());
-            beforeHandlers.add(timeoutLimitHandler);
-            afterHandlers.add(timeoutLimitHandler);
+            Handler timeoutHandler = new TimeoutHandler(config.timeoutDuration.toMillis());
+            beforeHandlers.add(timeoutHandler);
+            afterHandlers.add(timeoutHandler);
         }
 
         if (config.maxRetries != null) {
-            beforeHandlers.add(new RetryCountLimitHandler(config.maxRetries));
+            beforeHandlers.add(new RetryCountHandler(config.maxRetries));
         }
 
         if (config.expBackoffDuration != null && config.expBackoffMaxDuration != null) {
-            beforeHandlers.add(new ExpBackoffLimitHandler(config.expBackoffDuration.toMillis(), config.expBackoffMaxDuration.toMillis()));
+            beforeHandlers.add(new ExpBackoffHandler(config.expBackoffDuration.toMillis(), config.expBackoffMaxDuration.toMillis()));
         }
 
         if (config.expBackoffDuration != null && config.expBackoffMaxDuration == null) {
-            beforeHandlers.add(new ExpBackoffLimitHandler(config.expBackoffDuration.toMillis()));
+            beforeHandlers.add(new ExpBackoffHandler(config.expBackoffDuration.toMillis()));
         }
 
         return Arrays.asList(
-                new CompositeLimitHandler(beforeHandlers.toArray(new LimitHandler[0])),
-                exceptionHandler,
-                new CompositeLimitHandler(afterHandlers.toArray(new LimitHandler[0])));
+                new io.github.ravichaturvedi.retrier.handler.limit.CompositeHandler(beforeHandlers.toArray(new Handler[0])),
+                handler,
+                new io.github.ravichaturvedi.retrier.handler.limit.CompositeHandler(afterHandlers.toArray(new Handler[0])));
     }
 
     @Override
