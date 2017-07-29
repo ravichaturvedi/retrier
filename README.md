@@ -1,5 +1,7 @@
 # Retrier
 
+[![Build Status](https://travis-ci.org/ravichaturvedi/retrier.svg?branch=master)](https://travis-ci.org/ravichaturvedi/retrier)
+
 Java library to simplify retries of any function or code block (piece of code wrapped in lambda expression) without 
 changing the execution flow from developer perspective. They can rely on the return value of the function/code block in retry, etc..
 
