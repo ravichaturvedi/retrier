@@ -66,18 +66,19 @@ The whole idea behind building thins library is to encourage developers to build
 * Returned exception will be captured into `Exception` type, so user need to handle that if required.
 But as the actual exception gets propogated so should be easily taken care of.
 
-## When to use and not to use
-Ensure you are have an [idempotent](https://en.wikipedia.org/wiki/Idempotence) operation to put it in retry block.
+## Safety
+Keep in mind any side effects that may occur if the operation is executed multiple times.
+In general, the it is safe to retry only [idempotent](https://en.wikipedia.org/wiki/Idempotence) operations.
+Idempotent operations are those which do not change the result when applied repeatedly.
 
-Example of `idempotent` operation:
-* Put value in some store corresponding to a key without any condition.
-* map.put(1, 2)
-* get operations -- list or single item
+Examples of `idempotent` operation:
+* Put a value in some store corresponding to a key without any condition.
+* Read operations that have no side effect
+* HTTP GET or PUT (typically)
 
-Example of `non-idempotent` operation:
-* Increment of a counter
-* counter++
-* map.putIfAbsent(1, 2)
+Examples of `non-idempotent` operation:
+* Increment a counter
+* HTTP POST (typically)
 
 ## Usages 
 Specifying below some typical retry use cases covered by the Retrier.
